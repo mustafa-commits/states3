@@ -1,5 +1,8 @@
 package com.ayn.states.realstate.entity.user;
 
+import com.ayn.states.realstate.entity.payment.Payment;
+import com.ayn.states.realstate.entity.subscriptions.Subscription;
+import com.ayn.states.realstate.entity.userSubscription.UserSubscription;
 import com.ayn.states.realstate.enums.UserStatus;
 import com.ayn.states.realstate.enums.UserType;
 import jakarta.persistence.*;
@@ -11,6 +14,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Getter
@@ -24,11 +28,17 @@ public class Users {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long userId;
 
-    private String name;
+    private String firstName;
+
+    private String lastName;
+
+    private String company;
 
     private String phone;
 
-    private String governorate;
+    private int country;
+
+    private int governorate;
 
     private LocalDateTime lastSeen;
 
@@ -41,9 +51,16 @@ public class Users {
     @UpdateTimestamp
     private LocalDateTime modifiedAt;
 
+    @Column(columnDefinition = "TINYINT default 1")
     private UserStatus isActive;
 
     private UserType userType;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<UserSubscription> subscriptions;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Payment> payments;
 
 
 
