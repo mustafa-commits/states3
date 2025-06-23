@@ -1,11 +1,15 @@
 package com.ayn.states.realstate.service.users;
 
 
+import com.ayn.states.realstate.controller.CredentialController;
+import com.ayn.states.realstate.entity.user.Users;
 import com.ayn.states.realstate.entity.verification.DTO.VerificationRequest;
 import com.ayn.states.realstate.entity.verification.DTO.VerificationResponse;
 import com.ayn.states.realstate.entity.verification.UserVerification;
 import com.ayn.states.realstate.enums.CodeSend;
 import com.ayn.states.realstate.enums.LoginStatus;
+import com.ayn.states.realstate.enums.SignUpStatus;
+import com.ayn.states.realstate.enums.UserStatus;
 import com.ayn.states.realstate.exception.UnauthorizedException;
 import com.ayn.states.realstate.models.user.UserCheck;
 import com.ayn.states.realstate.models.user.UserCheckNumber;
@@ -25,6 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
@@ -139,4 +144,15 @@ public class UserService {
 
     }
 
+    public SignUpStatus signUp(CredentialController.SignUpRequest signUpRequest) {
+
+        if (usersRepo.existsByPhoneNumber(signUpRequest.phoneNumber()).isPresent()) {
+            return SignUpStatus.EXISTS;
+        }else {
+            usersRepo.save(new Users(signUpRequest.firstName(),
+                    signUpRequest.lastName(), signUpRequest.phoneNumber(),signUpRequest.country(), signUpRequest.governorate(), LocalDateTime.now(), UserStatus.ACTIVE));
+            return SignUpStatus.CREATED;
+        }
+
+    }
 }

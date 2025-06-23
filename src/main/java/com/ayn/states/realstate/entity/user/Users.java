@@ -63,5 +63,13 @@ public class Users {
     private List<Payment> payments;
 
 
-
+    public Users(String firstName, String lastName, String phone, int country, int governorate, LocalDateTime createdAt, UserStatus isActive) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.phone = phone;
+        this.country = country;
+        this.governorate = governorate;
+        this.createdAt = createdAt;
+        this.isActive = isActive;
+    }
 }

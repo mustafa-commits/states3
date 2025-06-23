@@ -45,8 +45,12 @@ public class States {
 
     private long price;
 
-    @Column(columnDefinition = "POINT SRID 4326", nullable = false)
-    private Point location;
+//    @Column(columnDefinition = "POINT SRID 4326", nullable = false)
+//    private Point location;
+
+    private int longitude;
+
+    private int latitude;
 
 
     @Column(columnDefinition = "TINYINT default 1")
