@@ -14,6 +14,6 @@ public interface UsersRepo extends JpaRepository<Users,Long> {
     @Query("SELECT u.userId FROM Users u WHERE u.phone LIKE %:phone")
     Optional<Integer> existsByPhoneNumber(@Param("phone") String phone);
 
-    @Query("SELECT u.name FROM Users u WHERE u.userId = :Id")
+    @Query("SELECT u.firstName || ' ' || u.lastName FROM Users u WHERE u.userId = :Id")
     String findNameById(@Param("Id") int id);
 }

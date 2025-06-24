@@ -65,12 +65,12 @@ public class SubscriptionController {
         }
     }
 
-    @PostMapping("/user/{userId}/increment-listing")
-    public ResponseEntity<Void> incrementPropertyListing(@PathVariable Long userId) {
-        if (subscriptionService.canCreatePropertyListing(userId)) {
-            subscriptionService.incrementPropertyListingCount(userId);
-            return ResponseEntity.ok().build();
-        }
-        return ResponseEntity.badRequest().build();
-    }
+//    @PostMapping("/user/{userId}/increment-listing")
+//    public ResponseEntity<Void> incrementPropertyListing(@PathVariable Long userId) {
+//        if (subscriptionService.canCreatePropertyListing(userId)) {
+//            subscriptionService.incrementPropertyListingCount(userId);
+//            return ResponseEntity.ok().build();
+//        }
+//        return ResponseEntity.badRequest().build();
+//    }
 }

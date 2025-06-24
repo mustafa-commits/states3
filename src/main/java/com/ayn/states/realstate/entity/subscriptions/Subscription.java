@@ -56,8 +56,8 @@ public class Subscription {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
-    @OneToMany(mappedBy = "subscriptionPlan", cascade = CascadeType.ALL)
-    private List<Users> userSubscriptions;
+//    @OneToMany(mappedBy = "subscriptionPlan", cascade = CascadeType.ALL)
+//    private List<Users> userSubscriptions;
 
 
 

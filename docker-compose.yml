@@ -3,3 +3,12 @@ services:
     image: redis:8.0.2
     ports:
       - "6379:6379"
+#  mysql:
+#    image: mysql:8.0
+#    environment:
+#      - MYSQL_ROOT_PASSWORD=your_root_password
+#      - MYSQL_DATABASE=your_database_name
+#      - MYSQL_USER=your_database_user
+#      - MYSQL_PASSWORD=your_database_password
+#    ports:
+#      - "3306:3306"

@@ -13,9 +13,10 @@ import java.util.Optional;
 @Repository
 public interface UserSubscriptionRepository extends JpaRepository<UserSubscription, Long> {
 
+    @Query("SELECT us FROM UserSubscription us WHERE us.user.userId = :userId AND us.status = :status")
     Optional<UserSubscription> findByUserIdAndStatus(Long userId, SubscriptionStatus status);
 
-    List<UserSubscription> findByUserId(Long userId);
+//    List<UserSubscription> findByUserId(Long userId);
 
     @Query("SELECT us FROM UserSubscription us WHERE us.status = :status AND us.endDate < :currentDate")
     List<UserSubscription> findExpiredSubscriptions(SubscriptionStatus status, LocalDateTime currentDate);
@@ -23,6 +24,6 @@ public interface UserSubscriptionRepository extends JpaRepository<UserSubscripti
     @Query("SELECT us FROM UserSubscription us WHERE us.autoRenew = true AND us.endDate BETWEEN :startDate AND :endDate")
     List<UserSubscription> findSubscriptionsForRenewal(LocalDateTime startDate, LocalDateTime endDate);
 
-    @Query("SELECT us FROM UserSubscription us JOIN FETCH us.subscriptionPlan WHERE us.user.id = :userId AND us.status = 'ACTIVE'")
+    @Query("SELECT us FROM UserSubscription us JOIN FETCH us.subscriptionPlan WHERE us.user.userId = :userId AND us.status = 'ACTIVE'")
     Optional<UserSubscription> findActiveSubscriptionByUserId(Long userId);
 }

@@ -76,38 +76,39 @@ public class SubscriptionService {
 
     public boolean hasFeatureAccess(Long userId, String feature) {
         Optional<UserSubscription> subscription = getActiveSubscription(userId);
-        if (!subscription.isPresent() || !subscription.get().isActive()) {
+        if (!subscription.isPresent() || !subscription.get().getStatus().equals(SubscriptionStatus.ACTIVE)) {
             return false;
         }
 
-        SubscriptionPlan plan = subscription.get().getSubscriptionPlan();
-
-        switch (feature.toLowerCase()) {
-            case "featured_listings":
-                return plan.getFeaturedListings() != null && plan.getFeaturedListings();
-            case "priority_support":
-                return plan.getPrioritySupport() != null && plan.getPrioritySupport();
-            case "analytics":
-                return plan.getAnalyticsAccess() != null && plan.getAnalyticsAccess();
-            case "virtual_tour":
-                return plan.getVirtualTourAccess() != null && plan.getVirtualTourAccess();
-            case "lead_management":
-                return plan.getLeadManagement() != null && plan.getLeadManagement();
-            case "api_access":
-                return plan.getApiAccess() != null && plan.getApiAccess();
-            default:
-                return false;
-        }
+//        SubscriptionPlan plan = subscription.get().getSubscriptionPlan();
+//
+//        switch (feature.toLowerCase()) {
+//            case "featured_listings":
+//                return plan.getFeaturedListings() != null && plan.getFeaturedListings();
+//            case "priority_support":
+//                return plan.getPrioritySupport() != null && plan.getPrioritySupport();
+//            case "analytics":
+//                return plan.getAnalyticsAccess() != null && plan.getAnalyticsAccess();
+//            case "virtual_tour":
+//                return plan.getVirtualTourAccess() != null && plan.getVirtualTourAccess();
+//            case "lead_management":
+//                return plan.getLeadManagement() != null && plan.getLeadManagement();
+//            case "api_access":
+//                return plan.getApiAccess() != null && plan.getApiAccess();
+//            default:
+//                return false;
+//        }
+        return false;
     }
 
-    public boolean canCreatePropertyListing(Long userId) {
-        Optional<UserSubscription> subscription = getActiveSubscription(userId);
-        if (!subscription.isPresent() || !subscription.get().isActive()) {
-            return false;
-        }
-
-        return subscription.get().canCreateMoreListings();
-    }
+//    public boolean canCreatePropertyListing(Long userId) {
+//        Optional<UserSubscription> subscription = getActiveSubscription(userId);
+//        if (!subscription.isPresent() || !subscription.get().getStatus().equals(SubscriptionStatus.ACTIVE)) {
+//            return false;
+//        }
+//
+//        return subscription.get().canCreateMoreListings();
+//    }
 
     public void incrementPropertyListingCount(Long userId) {
         Optional<UserSubscription> subscription = getActiveSubscription(userId);

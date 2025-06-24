@@ -16,5 +16,6 @@ public class SectionService {
 
 
     public List<RealStatesController.AppSections> getAppSections() {
+        return null;
     }
 }
