@@ -33,11 +33,16 @@ public class LookUp {
     @Column(name = "label", length = 255, nullable = false)
     private String label;
 
-    private int sortOrder;
+    private Integer sortOrder;
 
     @Column(columnDefinition = "TINYINT default 1")
     private boolean isActive;
 
 
+    /***    label       code value  typeCode
+     *     DONATOR_JOBS	124	مدخلة بيانات	1	مدخلة بيانات
+     *     DONATOR_JOBS	125	مدربة 	1	مدربة
+     *     DONATOR_JOBS	126	مدرسة	1	مدرسة
+     */
 
 }

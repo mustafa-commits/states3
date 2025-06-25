@@ -27,22 +27,19 @@ public interface StatesRepo extends JpaRepository<States,Long> {
      */
     List<States> findByStateTypeAndIsActive(StateType stateType, boolean isActive);
 
-    /**
-     * Find active properties by state type
-     * 
-     * @param stateType the type of property (FOR_SALE, FOR_RENT, etc)
-     * @return list of active properties of the specified type
-     */
-    @Query("""
-            SELECT s FROM States s WHERE s.stateType =:type AND s.isActive= true""")
-    Page<States> findByStateTypeAndIsActiveTrue(StateType stateType, Pageable pageable);
 
-    /**
-     * Find properties by country and state type
-     * 
-     * @param country the country ID
-     * @param stateType the type of property
-     * @return list of matching properties
-     */
+
+
+    @Query("""
+            SELECT s FROM States s WHERE s.stateType ='FOR_RENT' AND s.isActive= true""")
+    List<States> findByStateTypeAndIsActiveTrue(@Param("type") StateType stateType, Pageable pageable);
+
+    @Query("""
+            SELECT s FROM States s
+                         LEFT JOIN LookUp l ON (l.typeCode=1 AND l.code=:governate) WHERE s.stateType =:type AND s.isActive= true""")
+    List<States> findByStateTypeAndIsActiveTrueWithGovernate(@Param("type") StateType stateType,@Param("governate") int governate, Pageable pageable);
+
+
+
     List<States> findByCountryAndStateTypeAndIsActiveTrue(int country, StateType stateType);
 }

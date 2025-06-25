@@ -36,45 +36,45 @@ public class StatesService {
     private String stateLink;
 
 
-    @Cacheable(value = "SaleStates", key = "#page")
-    public Page<StatesDTO> getStateForSale(int page) {
-//        return statesRepository.findByStateTypeAndIsActiveTrue(StateType.FOR_SALE, PageRequest.of(page, 20, Sort.by(Sort.Direction.DESC, "publishedAt")))
+//    @Cacheable(value = "SaleStates", key = "#page")
+    public List<States> getStateForSale(int page) {
+        return statesRepository.findByStateTypeAndIsActiveTrue(StateType.FOR_SALE, PageRequest.of(page, 20, Sort.by(Sort.Direction.DESC, "publishedAt")));
 //                .map(statesMapper::toDto);
 
-        List<StatesDTO> content = jdbcClient.sql("""
-            SELECT s.state_id, s.description, s.area, s.num_of_rooms,
-                   s.garage_size, s.num_of_bath_rooms, s.num_of_storey,
-                   s.price, s.longitude, s.latitude, s.is_active,
-                   s.created_at, s.published_at, s.country, s.governorate,
-                   s.state_type,
-                   CONCAT(:link, a.url_image) as full_url_image,
-                   a.url_image_type
-            FROM states s
-            LEFT JOIN attachment a ON s.state_id = a.state_id
-            WHERE s.state_type = :type
-            AND s.is_active = true
-            ORDER BY s.published_at DESC
-            LIMIT :page*10 OFFSET 0
-            """)
-                .param("link",stateLink) // Base URL for attachments
-                .param(StateType.FOR_SALE.name())
-                .param("page",page)
-                .param("type",StateType.FOR_SALE.ordinal())
-                .query((rs, rowNum) -> StatesDTO.builder()
-                        .stateId(rs.getLong("state_id"))
-                        .description(rs.getString("description"))
-                        .area(rs.getInt("area"))
-                        .numOfRooms(rs.getInt("num_of_rooms"))
-                        .price(rs.getLong("price"))
-                        .longitude(rs.getInt("longitude"))
-                        .latitude(rs.getInt("latitude"))
-                        .stateType(StateType.valueOf(rs.getString("state_type")))
-                        .country(rs.getInt("country"))
-                        .governorate(rs.getInt("governorate"))
-                        .attachments(rs.getString("thumbnail_url"))
-                        .build())
-
-                .list();
+//        List<StatesDTO> content = jdbcClient.sql("""
+//            SELECT s.state_id, s.description, s.area, s.num_of_rooms,
+//                   s.garage_size, s.num_of_bath_rooms, s.num_of_storey,
+//                   s.price, s.longitude, s.latitude, s.is_active,
+//                   s.created_at, s.published_at, s.country, s.governorate,
+//                   s.state_type,
+//                   CONCAT(:link, a.url_image) as full_url_image,
+//                   a.url_image_type
+//            FROM states s
+//            LEFT JOIN attachment a ON s.state_id = a.state_id
+//            WHERE s.state_type = :type
+//            AND s.is_active = true
+//            ORDER BY s.published_at DESC
+//            LIMIT :page*10 OFFSET 0
+//            """)
+//                .param("link",stateLink) // Base URL for attachments
+//                .param(StateType.FOR_SALE.name())
+//                .param("page",page)
+//                .param("type",StateType.FOR_SALE.ordinal())
+//                .query((rs, rowNum) -> StatesDTO.builder()
+//                        .stateId(rs.getLong("state_id"))
+//                        .description(rs.getString("description"))
+//                        .area(rs.getInt("area"))
+//                        .numOfRooms(rs.getInt("num_of_rooms"))
+//                        .price(rs.getLong("price"))
+//                        .longitude(rs.getInt("longitude"))
+//                        .latitude(rs.getInt("latitude"))
+//                        .stateType(StateType.valueOf(rs.getString("state_type")))
+//                        .country(rs.getInt("country"))
+//                        .governorate(rs.getInt("governorate"))
+//                        .attachments(rs.getString("thumbnail_url"))
+//                        .build())
+//
+//                .list();
 
 
 
@@ -90,10 +90,18 @@ public class StatesService {
 
 
 
-    @Cacheable(value = "RentalStates", key = "#page + '_' + #size + '_' + #sortBy + '_' + #sortDirection")
-    public Page<StatesDTO> getStateForRent(int page) {
+//    @Cacheable(value = "RentalStates", key = "#page")
+    public List<States> getStateForRent(int page) {
 
-        return statesRepository.findByStateTypeAndIsActiveTrue(StateType.FOR_RENT, PageRequest.of(page, 20, Sort.by(Sort.Direction.DESC, "publishedAt")))
-                .map(statesMapper::toDto);
+        return statesRepository.findByStateTypeAndIsActiveTrue(StateType.FOR_RENT, PageRequest.of(page, 20, Sort.by(Sort.Direction.DESC, "publishedAt")));
+                //.map(statesMapper::toDto);
+    }
+
+    public List<States> getStateForRent(int page, int governate) {
+        return statesRepository.findByStateTypeAndIsActiveTrueWithGovernate(StateType.FOR_RENT,governate , PageRequest.of(page, 20, Sort.by(Sort.Direction.DESC, "publishedAt")));
+    }
+
+    public List<States> getStateForSale(int page, int governate) {
+        return statesRepository.findByStateTypeAndIsActiveTrueWithGovernate(StateType.FOR_SALE,governate , PageRequest.of(page, 20, Sort.by(Sort.Direction.DESC, "publishedAt")));
     }
 }

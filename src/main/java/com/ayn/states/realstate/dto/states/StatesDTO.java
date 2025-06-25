@@ -11,9 +11,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Main DTO for States entity with all properties
- */
+
 @Data
 @Builder
 @NoArgsConstructor
@@ -34,9 +32,9 @@ public class StatesDTO {
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
     private int createdUser;
-    private int modifiedUser;
-    private int publishedBy;
-    private int publishedAt;
+    private Integer modifiedUser;
+    private Integer publishedBy;
+    private LocalDateTime publishedAt;
     private int country;
     private int governorate;
     private StateType stateType;

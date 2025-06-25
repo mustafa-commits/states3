@@ -4,6 +4,7 @@ import com.ayn.states.realstate.dto.attachment.AttachmentDTO;
 import com.ayn.states.realstate.dto.states.*;
 import com.ayn.states.realstate.entity.att.Attachments;
 import com.ayn.states.realstate.entity.states.States;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -15,9 +16,10 @@ import java.util.stream.Collectors;
 @Component
 public class StatesMapper {
 
-    /**
-     * Convert States entity to StatesDTO
-     */
+    @Value("${StateAttLink}")
+    private String stateLink;
+
+
     public StatesDTO toDto(States entity) {
         if (entity == null) {
             return null;
@@ -199,6 +201,7 @@ public class StatesMapper {
                 .map(attachment -> AttachmentDTO.builder()
                         .urlImage(attachment.getUrlImage())
                         .urlImageType(attachment.getUrlImageType())
+                        .fullUrlImage(stateLink + attachment.getUrlImage())
                         .build())
                 .collect(Collectors.toList());
     }

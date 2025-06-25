@@ -22,8 +22,8 @@ import java.util.ArrayList;
 @Entity
 @Getter
 @Setter
-//@AllArgsConstructor
-//@NoArgsConstructor
+@AllArgsConstructor
+@NoArgsConstructor
 //@Table(name = "STATES",indexes = {
 //        @Index(name = "idx_location",columnList = "location")
 //})
@@ -70,11 +70,11 @@ public class States {
 
     private int createdUser;
 
-    private int modifiedUser;
+    private Integer modifiedUser;
 
-    private int publishedBy;
+    private Integer publishedBy;
 
-    private int publishedAt;
+    private LocalDateTime publishedAt;
 
     private int country;
 
@@ -88,7 +88,7 @@ public class States {
 
     @OneToMany(mappedBy = "states",
             orphanRemoval = true,
-            cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+            cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 //    @JsonManagedReference // Prevents infinite recursion in JSON serialization
     private List<Attachments> attachments = new ArrayList<>();
 

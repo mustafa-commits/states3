@@ -17,4 +17,6 @@ public class AttachmentDTO {
 
     private String urlImage;
     private UrlImageType urlImageType;
+    private String fullUrlImage;
+
 }

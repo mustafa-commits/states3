@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -30,13 +31,23 @@ public class RealStatesController implements SecuredRestController {
 
 
     @GetMapping("V1/api/StateForSale/{page}")
-    public Page<StatesDTO> getStateForSale(@PathVariable int page){
+    public List<States> getStateForSale(@PathVariable int page){
         return service.getStateForSale(page);
     }
 
     @GetMapping("V1/api/StateForRent/{page}")
-    public Page<StatesDTO> getStateForRent(@PathVariable int page){
+    public List<States> getStateForRent(@PathVariable int page){
         return service.getStateForRent(page);
+    }
+
+    @GetMapping("V1/api/StateForSale/{page}/{governate}")
+    public List<States> getStateForSale(@PathVariable int page,@PathVariable int governate){
+        return service.getStateForSale(page,governate);
+    }
+
+    @GetMapping("V1/api/StateForRent/{page}/{governate}")
+    public List<States> getStateForRent(@PathVariable int page,@PathVariable int governate){
+        return service.getStateForRent(page,governate);
     }
 
 

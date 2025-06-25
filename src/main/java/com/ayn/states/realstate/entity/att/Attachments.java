@@ -4,12 +4,14 @@ package com.ayn.states.realstate.entity.att;
 import com.ayn.states.realstate.entity.lookup.UrlImageType;
 import com.ayn.states.realstate.entity.states.States;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Formula;
 
 @Entity
 @Getter
@@ -25,9 +27,15 @@ public class Attachments {
 
 
     @JsonProperty("url_image")
+    @JsonIgnore
     private String UrlImage;
 
-    @JsonProperty("url_image_type")
+    @Formula("concat('http://localhost:8080/V1/api/stateAttachment/',url_image)")
+    private String fullUrl;
+
+//    @JsonProperty("url_image_type")
+    @JsonIgnore
+    @Enumerated(EnumType.STRING)
     private UrlImageType urlImageType;
 
 
