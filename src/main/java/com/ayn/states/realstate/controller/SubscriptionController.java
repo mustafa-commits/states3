@@ -12,14 +12,14 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Optional;
 
-@RestController
-@RequestMapping("/api/subscriptions")
+//@RestController
+//@RequestMapping("/api/subscriptions")
 public class SubscriptionController {
 
-    @Autowired
+//    @Autowired
     private SubscriptionService subscriptionService;
 
-    @Autowired
+//    @Autowired
     private SubscriptionRepo subscriptionPlanRepository;
 
     @GetMapping("/plans")

@@ -53,9 +53,9 @@ public class States {
 //    @Column(columnDefinition = "POINT SRID 4326", nullable = false)
 //    private Point location;
 
-    private int longitude;
+    private double longitude;
 
-    private int latitude;
+    private double latitude;
 
 
     @Column(columnDefinition = "TINYINT default 1", nullable = false)
@@ -103,7 +103,24 @@ public class States {
         attachment.setStates(null);
     }
 
-
+    public States(String description, int area, int numOfRooms, int garageSize, int numOfBathRooms, int numOfStorey, long price, double longitude, double latitude, int createdUser, Integer modifiedUser, Integer publishedBy, LocalDateTime publishedAt, int country, int governorate, StateType stateType) {
+        this.description = description;
+        this.area = area;
+        this.numOfRooms = numOfRooms;
+        this.garageSize = garageSize;
+        this.numOfBathRooms = numOfBathRooms;
+        this.numOfStorey = numOfStorey;
+        this.price = price;
+        this.longitude = longitude;
+        this.latitude = latitude;
+        this.createdUser = createdUser;
+        this.modifiedUser = modifiedUser;
+        this.publishedBy = publishedBy;
+        this.publishedAt = publishedAt;
+        this.country = country;
+        this.governorate = governorate;
+        this.stateType = stateType;
+    }
 
 
 }

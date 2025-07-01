@@ -18,7 +18,7 @@ import java.util.List;
 @AllArgsConstructor
 public class StatesDTO {
 
-    private long stateId;
+    private Long stateId;
     private String description;
     private int area;
     private int numOfRooms;
@@ -26,17 +26,17 @@ public class StatesDTO {
     private int numOfBathRooms;
     private int numOfStorey;
     private long price;
-    private int longitude;
-    private int latitude;
+    private double longitude;
+    private double latitude;
     private boolean isActive;
-    private LocalDateTime createdAt;
-    private LocalDateTime modifiedAt;
+//    private LocalDateTime createdAt;
+//    private LocalDateTime modifiedAt;
     private int createdUser;
-    private Integer modifiedUser;
-    private Integer publishedBy;
+//    private Integer modifiedUser;
+//    private Integer publishedBy;
     private LocalDateTime publishedAt;
     private int country;
     private int governorate;
     private StateType stateType;
-    private List<AttachmentDTO> attachments = new ArrayList<>();
+    private List<String> attachments = new ArrayList<>();
 }

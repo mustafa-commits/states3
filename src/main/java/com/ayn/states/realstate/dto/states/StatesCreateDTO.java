@@ -54,5 +54,5 @@ public class StatesCreateDTO {
     @NotNull(message = "State type is required")
     private StateType stateType;
 
-    private List<String> imageUrls = new ArrayList<>();
+//    private List<String> imageUrls = new ArrayList<>();
 }

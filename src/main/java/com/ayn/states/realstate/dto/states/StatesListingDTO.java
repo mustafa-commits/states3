@@ -21,8 +21,8 @@ public class StatesListingDTO {
     private int numOfRooms;
     private int numOfBathRooms;
     private long price;
-    private int longitude;
-    private int latitude;
+    private double longitude;
+    private double latitude;
     private StateType stateType;
     private String thumbnailUrl; // Main property image
     private int country;

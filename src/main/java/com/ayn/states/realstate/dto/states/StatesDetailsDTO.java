@@ -28,8 +28,8 @@ public class StatesDetailsDTO {
     private int numOfBathRooms;
     private int numOfStorey;
     private long price;
-    private int longitude;
-    private int latitude;
+    private double longitude;
+    private double latitude;
     private LocalDateTime createdAt;
     private int country;
     private int governorate;

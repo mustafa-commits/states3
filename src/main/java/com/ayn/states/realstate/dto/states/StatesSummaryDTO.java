@@ -21,8 +21,8 @@ public class StatesSummaryDTO {
     private int numOfRooms;
     private int numOfBathRooms;
     private long price;
-    private int longitude;
-    private int latitude;
+    private double longitude;
+    private double latitude;
     private StateType stateType;
     private int country;
     private int governorate;

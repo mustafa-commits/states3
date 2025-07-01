@@ -10,7 +10,8 @@
 	</parent>
 	<groupId>com.ayn.states</groupId>
 	<artifactId>states</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.1</version>
+	<packaging>war</packaging>
 	<name>states</name>
 	<description>Demo project for Spring Boot</description>
 	<url/>
@@ -27,15 +28,33 @@
 		<url/>
 	</scm>
 	<properties>
-		<java.version>21</java.version>
+		<java.version>22</java.version>
 	</properties>
 	<dependencies>
 
+				<dependency>
+					<groupId>org.springframework.boot</groupId>
+					<artifactId>spring-boot-starter-tomcat</artifactId>
+					<scope>provided</scope>
+				</dependency>
 
 		<!-- Hibernate Spatial -->
 		<dependency>
 			<groupId>org.hibernate.orm</groupId>
 			<artifactId>hibernate-spatial</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>2.19.0</version>
+		</dependency>
+
+
+		<dependency>
+			<groupId>com.tinify</groupId>
+			<artifactId>tinify</artifactId>
+			<version>1.8.8</version>
 		</dependency>
 
 		<dependency>
@@ -58,10 +77,10 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-data-redis</artifactId>
-		</dependency>
+<!--		<dependency>-->
+<!--			<groupId>org.springframework.boot</groupId>-->
+<!--			<artifactId>spring-boot-starter-data-redis</artifactId>-->
+<!--		</dependency>-->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-docker-compose</artifactId>
@@ -142,10 +161,14 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-actuator</artifactId>
+		</dependency>
 	</dependencies>
 
 	<build>
-		<finalName>realStateLive##${project.version}</finalName>
+		<finalName>realState##${project.version}</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -170,6 +193,27 @@
 						</exclude>
 					</excludes>
 				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<version>3.1.0</version>
+				<executions>
+					<execution>
+						<id>copy-after-package</id>
+						<phase>verify</phase> <!-- After package phase -->
+						<configuration>
+							<target>
+								<copy todir="\\APISERVER\\webapps">
+									<fileset dir="${project.build.directory}" includes="realState##${project.version}.war"/>
+								</copy>
+							</target>
+						</configuration>
+						<goals>
+							<goal>run</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>

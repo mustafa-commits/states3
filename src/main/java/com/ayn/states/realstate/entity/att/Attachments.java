@@ -23,7 +23,7 @@ public class Attachments {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long Id;
+    private Long Id;
 
 
     @JsonProperty("url_image")
@@ -45,4 +45,10 @@ public class Attachments {
     private States states;
 
 
+    public Attachments(String urlImage, String fullUrl, UrlImageType urlImageType, States states) {
+        UrlImage = urlImage;
+        this.fullUrl = fullUrl;
+        this.urlImageType = urlImageType;
+        this.states = states;
+    }
 }
