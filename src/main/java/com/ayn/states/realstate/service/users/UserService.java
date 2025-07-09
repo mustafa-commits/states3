@@ -74,6 +74,7 @@ public class UserService {
         int userId = userIdOpt.get();
         String fullPhone = countryCode + userNum;
 
+
         if (codeSend == CodeSend.WHATS_APP) {
             int code = generateRandomPassword(userId, codeSend, fullPhone);
             whatsAppService.sendMessage(
@@ -82,6 +83,7 @@ public class UserService {
                             .append('*').append(code).append("* هو كود التحقق الخاص بك. للحفاظ على معلوماتك، لا تشارك هذا الكود مع أي شخص.\n")
                             .toString()
             );
+            return new UserCheckNumber(new UserCheck(LoginStatus.REGISTER, fullPhone), userId);
         } else if (codeSend == CodeSend.TELEGRAM) {
             String loginKey = countryCode.charAt(0) == '+'
                     ? countryCode.substring(1) + userNum + "+"

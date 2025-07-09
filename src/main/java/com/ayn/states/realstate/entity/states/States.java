@@ -2,6 +2,8 @@ package com.ayn.states.realstate.entity.states;
 
 
 import com.ayn.states.realstate.entity.att.Attachments;
+import com.ayn.states.realstate.entity.propertyFeature.PropertyFeatures;
+import com.ayn.states.realstate.enums.PaymentMethod;
 import com.ayn.states.realstate.enums.StateType;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
@@ -47,6 +49,14 @@ public class States {
 
     private int numOfStorey;
 
+    private int numOfBedRooms;
+
+    private int propertyType;
+
+    private int ownershipType;
+
+    private int buildingAge;
+
 
     private long price;
 
@@ -80,6 +90,10 @@ public class States {
 
     private int governorate;
 
+    private String address;
+
+    private PaymentMethod paymentMethod;
+
     @Enumerated(EnumType.STRING)  // Use STRING instead of ORDINAL
     @Column(name = "state_type", nullable = false)
     @NotNull
@@ -92,6 +106,11 @@ public class States {
 //    @JsonManagedReference // Prevents infinite recursion in JSON serialization
     private List<Attachments> attachments = new ArrayList<>();
 
+    @OneToMany(mappedBy = "featuredState",
+            orphanRemoval = true,
+            cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private List<PropertyFeatures> propertyFeatures = new ArrayList<>();
+
 
     public void addAttachment(Attachments attachment) {
         attachments.add(attachment);
@@ -103,7 +122,8 @@ public class States {
         attachment.setStates(null);
     }
 
-    public States(String description, int area, int numOfRooms, int garageSize, int numOfBathRooms, int numOfStorey, long price, double longitude, double latitude, int createdUser, Integer modifiedUser, Integer publishedBy, LocalDateTime publishedAt, int country, int governorate, StateType stateType) {
+    public States(String description, int area, int numOfRooms, int garageSize, int numOfBathRooms, int numOfStorey, long price, double longitude, double latitude, int createdUser, Integer modifiedUser, Integer publishedBy, LocalDateTime publishedAt, int country, int governorate, StateType stateType,
+                  int propertyType,int ownershipType,int buildingAge,String address, PaymentMethod paymentMethod) {
         this.description = description;
         this.area = area;
         this.numOfRooms = numOfRooms;
@@ -120,6 +140,11 @@ public class States {
         this.country = country;
         this.governorate = governorate;
         this.stateType = stateType;
+        this.propertyType = propertyType;
+        this.ownershipType = ownershipType;
+        this.buildingAge = buildingAge;
+        this.address = address;
+        this.paymentMethod = paymentMethod;
     }
 
 

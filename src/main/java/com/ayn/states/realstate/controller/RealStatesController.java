@@ -3,9 +3,11 @@ package com.ayn.states.realstate.controller;
 import com.ayn.states.realstate.SecuredRestController;
 import com.ayn.states.realstate.dto.states.StatesDTO;
 import com.ayn.states.realstate.entity.states.States;
+import com.ayn.states.realstate.enums.PaymentMethod;
 import com.ayn.states.realstate.enums.StateType;
 import com.ayn.states.realstate.service.attachment.AttachmentService;
 import com.ayn.states.realstate.service.sections.SectionService;
+import com.ayn.states.realstate.service.states.StateFeaturesService;
 import com.ayn.states.realstate.service.states.StatesService;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -33,6 +35,15 @@ public class RealStatesController implements SecuredRestController {
 
     @Autowired
     private AttachmentService attachmentService;
+
+    @Autowired
+    private StateFeaturesService stateFeaturesService;
+
+    @GetMapping("V1/api/StateFeatures")
+    public List<LookUpData> getStateFeatures(){
+        return stateFeaturesService.getStateFeatures();
+    }
+
 
     @GetMapping("V1/api/appSections")
     public List<AppSections> appSections(){
@@ -62,12 +73,12 @@ public class RealStatesController implements SecuredRestController {
 
 
     @GetMapping("V1/api/StateForSale/{page}/{governate}")
-    public List<States> getStateForSale(@PathVariable int page,@PathVariable int governate){
+    public List<StatesDTO> getStateForSale(@PathVariable int page,@PathVariable int governate){
         return service.getStateForSale(page,governate);
     }
 
     @GetMapping("V1/api/StateForRent/{page}/{governate}")
-    public List<States> getStateForRent(@PathVariable int page,@PathVariable int governate){
+    public List<StatesDTO> getStateForRent(@PathVariable int page,@PathVariable int governate){
         return service.getStateForRent(page,governate);
     }
 
@@ -76,7 +87,7 @@ public class RealStatesController implements SecuredRestController {
     public boolean addNewState(@RequestHeader(name = "Authorization") String token,
                                @RequestParam @NotBlank(message = "Description is required") String description,
                                @RequestParam @Min(value = 1, message = "Area must be greater than 0") int area,
-                               @RequestParam(name = "num_of_rooms") @Min(value = 0, message = "Number of rooms cannot be negative") int numOfRooms,
+                               @RequestParam(name = "num_of_bed_rooms") @Min(value = 0, message = "Number of rooms cannot be negative") int numOfBedRooms,
                                @RequestParam(name = "garage_size") @Min(value = 0, message = "Garage size cannot be negative") int garageSize,
                                @RequestParam(name = "num_of_bath_rooms") @Min(value = 0, message = "Number of bathrooms cannot be negative") int numOfBathRooms,
                                @RequestParam(name = "num_of_storey") @Min(value = 0, message = "Number of storeys cannot be negative") int numOfStorey,
@@ -85,22 +96,31 @@ public class RealStatesController implements SecuredRestController {
                                @RequestParam double latitude,
                                @RequestParam @NotNull(message = "Country is required") int country,
                                @RequestParam @NotNull(message = "Governorate is required") int governorate,
-                               @RequestParam(name = "state_ype") @NotNull(message = "State type is required") StateType stateType,
+                               @RequestParam(name = "category") @NotNull(message = "State type is required") StateType stateType,
+                               @RequestParam(name = "property_type") int propertyType,
+                               @RequestParam(name = "ownership_type") int ownershipType,
+                               @RequestParam(name = "building_age") int buildingAge,
+                               @RequestParam(name = "address") String address,
+                               @RequestParam(name = "payment_method") PaymentMethod paymentMethod,
+                               @RequestParam(name = "features",required = false) List<Integer> features,
+
+
                                @RequestParam List<MultipartFile> attachments) throws IOException {
         return service.addNewState(description,
-                area,numOfRooms,garageSize,numOfBathRooms,numOfStorey,price,longitude,latitude,country,governorate,stateType,attachments,token);
+                area,numOfBedRooms,garageSize,numOfBathRooms,numOfStorey,price,longitude,latitude,country,governorate,stateType,attachments,token,
+                propertyType, ownershipType, buildingAge, address, paymentMethod, features);
     }
 
 
 
     @GetMapping("/V1/api/stateAttachment/{fileName}")
-    @Cacheable(cacheNames = "StateAttachment", key = "'file_' + #fileName")
+//    @Cacheable(cacheNames = "StateAttachment", key = "'file_' + #fileName")
     public ResponseEntity<?> getStateAttachment(@PathVariable String fileName) {
        return attachmentService.getStateAttachment(fileName);
     }
 
     @GetMapping("/V1/api/AllGovernate")
-    @CacheEvict(value = {"SaleStates","RentalStates"})
+//    @CacheEvict(value = {"SaleStates","RentalStates"})
     public List<LookUpData> getAllGovernate(){
         return service.getAllGovernate();
     }

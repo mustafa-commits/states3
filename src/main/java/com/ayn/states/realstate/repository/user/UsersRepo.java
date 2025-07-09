@@ -11,7 +11,7 @@ import java.util.Optional;
 @Repository
 public interface UsersRepo extends JpaRepository<Users,Long> {
 
-    @Query("SELECT u.userId FROM Users u WHERE u.phone LIKE %:phone")
+    @Query("SELECT u.userId FROM Users u WHERE u.phone LIKE CONCAT('%', :phone)")
     Optional<Integer> existsByPhoneNumber(@Param("phone") String phone);
 
     @Query("SELECT u.firstName || ' ' || u.lastName FROM Users u WHERE u.userId = :Id")

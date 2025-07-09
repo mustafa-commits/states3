@@ -13,8 +13,8 @@ public class WhatsAppService {
 
 
     public boolean sendMessage(String phoneNumber, String messageBody) {
-        String token = "c97bs5z65hvpkw6b";
-        String instanceId = "instance41001";
+        String token = "khvxcpalof10w5yh";
+        String instanceId = "instance79252";
 
 
         OkHttpClient client = new OkHttpClient();
