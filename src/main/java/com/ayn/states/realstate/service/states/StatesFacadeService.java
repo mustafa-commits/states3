@@ -4,7 +4,7 @@
 //import com.ayn.states.realstate.dto.states.StatesDTO;
 //import com.ayn.states.realstate.dto.states.StatesSummaryDTO;
 //import com.ayn.states.realstate.entity.states.States;
-//import com.ayn.states.realstate.enums.StateType;
+//import com.ayn.states.realstate.enums.Category;
 //import com.ayn.states.realstate.mapper.StatesMapper;
 //import com.ayn.states.realstate.repository.state.StatesRepo;
 //import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +36,7 @@
 //     */
 ////    @Cacheable(value = "SalePropertiesSummary")
 ////    public Page<StatesSummaryDTO> getPropertiesForSaleSummary() {
-////        Page<States> forSaleStates = statesRepository.findByStateTypeAndIsActiveTrue(StateType.FOR_SALE,PageRequest.of(page, 100, Sort.by(Sort.Direction.DESC, "lastSeen")));
+////        Page<States> forSaleStates = statesRepository.findByStateTypeAndIsActiveTrue(Category.FOR_SALE,PageRequest.of(page, 100, Sort.by(Sort.Direction.DESC, "lastSeen")));
 ////        return statesMapper.toSummaryDtoList(forSaleStates);
 ////    }
 //
@@ -47,7 +47,7 @@
 //     */
 ////    @Cacheable(value = "RentPropertiesSummary")
 ////    public Page<StatesSummaryDTO> getPropertiesForRentSummary() {
-////        Page<States> forRentStates = statesRepository.findByStateTypeAndIsActiveTrue(StateType.FOR_RENT,PageRequest.of(0, 20, Sort.by(Sort.Direction.fromString(""), "publishedAt")));
+////        Page<States> forRentStates = statesRepository.findByStateTypeAndIsActiveTrue(Category.FOR_RENT,PageRequest.of(0, 20, Sort.by(Sort.Direction.fromString(""), "publishedAt")));
 ////        return statesMapper.toSummaryDtoList(forRentStates);
 ////    }
 //
@@ -80,8 +80,8 @@
 ////        // In a real application, you'd use a Specification or custom query
 ////        List<States> states;
 ////
-////        if (criteria.getStateType() != null) {
-////            states = statesRepository.findByStateTypeAndIsActiveTrue(criteria.getStateType());
+////        if (criteria.getCategory() != null) {
+////            states = statesRepository.findByStateTypeAndIsActiveTrue(criteria.getCategory());
 ////        } else {
 ////            states = statesRepository.findAll();
 ////        }

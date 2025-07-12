@@ -1,6 +1,6 @@
 package com.ayn.states.realstate.dto.states;
 
-import com.ayn.states.realstate.enums.StateType;
+import com.ayn.states.realstate.enums.Category;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -23,7 +23,7 @@ public class StatesListingDTO {
     private long price;
     private double longitude;
     private double latitude;
-    private StateType stateType;
+    private Category category;
     private String thumbnailUrl; // Main property image
     private int country;
     private int governorate;

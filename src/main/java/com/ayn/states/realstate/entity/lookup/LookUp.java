@@ -35,8 +35,20 @@ public class LookUp {
 
     private Integer sortOrder;
 
+    @Column(name = "parent_id", nullable = true)
+    private Long parentId;
+
     @Column(columnDefinition = "TINYINT default 1")
     private boolean isActive;
+
+    /***
+     * @ManyToOne
+     * @JoinColumn(name = "parent_id", insertable = false, updatable = false)
+     * private Lookup parent;
+     *
+     * @OneToMany(mappedBy = "parent")
+     * private List<Lookup> children;
+     */
 
 
     /***    label       code value  typeCode

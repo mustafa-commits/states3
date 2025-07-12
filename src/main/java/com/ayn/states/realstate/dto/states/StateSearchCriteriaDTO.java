@@ -1,6 +1,6 @@
 package com.ayn.states.realstate.dto.states;
 
-import com.ayn.states.realstate.enums.StateType;
+import com.ayn.states.realstate.enums.Category;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class StateSearchCriteriaDTO {
 
-    private StateType stateType;
+    private Category category;
     private Integer minPrice;
     private Integer maxPrice;
     private Integer minArea;

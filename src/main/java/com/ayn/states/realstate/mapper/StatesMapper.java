@@ -45,7 +45,7 @@
 //                .publishedAt(entity.getPublishedAt())
 //                .country(entity.getCountry())
 //                .governorate(entity.getGovernorate())
-//                .stateType(entity.getStateType())
+//                .category(entity.getCategory())
 ////                .attachments(mapAttachments(entity.getAttachments()))
 //                .build();
 //    }
@@ -71,7 +71,7 @@
 //        entity.setActive(true); // Default to active
 //        entity.setCountry(dto.getCountry());
 //        entity.setGovernorate(dto.getGovernorate());
-//        entity.setStateType(dto.getStateType());
+//        entity.setCategory(dto.getCategory());
 //
 //        return entity;
 //    }
@@ -118,8 +118,8 @@
 //        entity.setCountry(dto.getCountry());
 //        entity.setGovernorate(dto.getGovernorate());
 //
-//        if (dto.getStateType() != null) {
-//            entity.setStateType(dto.getStateType());
+//        if (dto.getCategory() != null) {
+//            entity.setCategory(dto.getCategory());
 //        }
 //    }
 //
@@ -145,7 +145,7 @@
 //                .price(entity.getPrice())
 //                .longitude(entity.getLongitude())
 //                .latitude(entity.getLatitude())
-//                .stateType(entity.getStateType())
+//                .category(entity.getCategory())
 //                .thumbnailUrl(thumbnailUrl)
 //                .country(entity.getCountry())
 //                .governorate(entity.getGovernorate())
@@ -174,8 +174,8 @@
 //                .createdAt(entity.getCreatedAt())
 //                .country(entity.getCountry())
 //                .governorate(entity.getGovernorate())
-//                .stateType(entity.getStateType())
-//                .stateTypeDisplayName(entity.getStateType() != null ? entity.getStateType().toString() : null)
+//                .category(entity.getCategory())
+//                .stateTypeDisplayName(entity.getCategory() != null ? entity.getCategory().toString() : null)
 //                .attachments(mapAttachments(entity.getAttachments()))
 //                .build();
 //    }
@@ -230,7 +230,7 @@
 //                .price(entity.getPrice())
 //                .longitude(entity.getLongitude())
 //                .latitude(entity.getLatitude())
-//                .stateType(entity.getStateType())
+//                .category(entity.getCategory())
 //                .country(entity.getCountry())
 //                .governorate(entity.getGovernorate())
 //                .mainImageUrl(mainImageUrl)

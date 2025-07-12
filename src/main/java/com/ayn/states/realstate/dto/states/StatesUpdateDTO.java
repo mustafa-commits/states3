@@ -1,6 +1,6 @@
 package com.ayn.states.realstate.dto.states;
 
-import com.ayn.states.realstate.enums.StateType;
+import com.ayn.states.realstate.enums.Category;
 import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -45,7 +45,7 @@ public class StatesUpdateDTO {
     private boolean isActive;
     private int country;
     private int governorate;
-    private StateType stateType;
+    private Category category;
 
     private List<String> imageUrlsToAdd = new ArrayList<>();
     private List<Long> attachmentIdsToRemove = new ArrayList<>();

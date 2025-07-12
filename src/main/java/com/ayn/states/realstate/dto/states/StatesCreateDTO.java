@@ -1,6 +1,6 @@
 package com.ayn.states.realstate.dto.states;
 
-import com.ayn.states.realstate.enums.StateType;
+import com.ayn.states.realstate.enums.Category;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -8,9 +8,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * DTO for creating new States
@@ -52,7 +49,7 @@ public class StatesCreateDTO {
     private int governorate;
 
     @NotNull(message = "State type is required")
-    private StateType stateType;
+    private Category category;
 
 //    private List<String> imageUrls = new ArrayList<>();
 }

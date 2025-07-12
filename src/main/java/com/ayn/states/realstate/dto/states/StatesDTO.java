@@ -1,8 +1,7 @@
 package com.ayn.states.realstate.dto.states;
 
-import com.ayn.states.realstate.dto.attachment.AttachmentDTO;
+import com.ayn.states.realstate.enums.Category;
 import com.ayn.states.realstate.enums.PaymentMethod;
-import com.ayn.states.realstate.enums.StateType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -28,6 +27,7 @@ public class StatesDTO {
     private int numOfStorey;
     private int numOfBedrooms;
     private String propertyType;
+    private String propertySubType;
     private String ownershipType;
     private int buildingAge;
     private long price;
@@ -41,7 +41,7 @@ public class StatesDTO {
     private LocalDateTime publishedAt;
     private String country;
     private String governorate;
-    private StateType category;
+    private Category category;
     private String address;
     private PaymentMethod paymentMethod;
     private List<String> attachments = new ArrayList<>();

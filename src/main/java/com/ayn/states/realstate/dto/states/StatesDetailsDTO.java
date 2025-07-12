@@ -1,7 +1,7 @@
 package com.ayn.states.realstate.dto.states;
 
 import com.ayn.states.realstate.dto.attachment.AttachmentDTO;
-import com.ayn.states.realstate.enums.StateType;
+import com.ayn.states.realstate.enums.Category;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -33,7 +33,7 @@ public class StatesDetailsDTO {
     private LocalDateTime createdAt;
     private int country;
     private int governorate;
-    private StateType stateType;
+    private Category category;
     private List<AttachmentDTO> attachments = new ArrayList<>();
 
     // Additional fields for detailed view

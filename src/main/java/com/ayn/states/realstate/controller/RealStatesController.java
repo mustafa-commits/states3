@@ -2,20 +2,14 @@ package com.ayn.states.realstate.controller;
 
 import com.ayn.states.realstate.SecuredRestController;
 import com.ayn.states.realstate.dto.states.StatesDTO;
-import com.ayn.states.realstate.entity.states.States;
+import com.ayn.states.realstate.enums.Category;
 import com.ayn.states.realstate.enums.PaymentMethod;
-import com.ayn.states.realstate.enums.StateType;
 import com.ayn.states.realstate.service.attachment.AttachmentService;
-import com.ayn.states.realstate.service.sections.SectionService;
-import com.ayn.states.realstate.service.states.StateFeaturesService;
 import com.ayn.states.realstate.service.states.StatesService;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
-import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -27,8 +21,6 @@ import java.util.List;
 @RestController
 public class RealStatesController implements SecuredRestController {
 
-    @Autowired
-    private SectionService sectionService;
 
     @Autowired
     private StatesService service;
@@ -36,50 +28,35 @@ public class RealStatesController implements SecuredRestController {
     @Autowired
     private AttachmentService attachmentService;
 
-    @Autowired
-    private StateFeaturesService stateFeaturesService;
-
-    @GetMapping("V1/api/StateFeatures")
-    public List<LookUpData> getStateFeatures(){
-        return stateFeaturesService.getStateFeatures();
-    }
-
-
-    @GetMapping("V1/api/appSections")
-    public List<AppSections> appSections(){
-        return sectionService.getAppSections();
-    }
-
-
     @GetMapping("V1/api/StateForSale/{page}")
-    public List<StatesDTO> getStateForSale(@PathVariable int page){
+    public List<StatesDTO> getStateForSale(@PathVariable int page) {
         return service.getStateForSale(page);
     }
 
     @GetMapping("V1/api/StateForRent/{page}")
-    public List<StatesDTO> getStateForRent(@PathVariable int page){
+    public List<StatesDTO> getStateForRent(@PathVariable int page) {
         return service.getStateForRent(page);
     }
 
     @GetMapping("V1/api/unPublishedStates/{page}")
-    public List<StatesDTO> unPublishedStates(@PathVariable int page){
+    public List<StatesDTO> unPublishedStates(@PathVariable int page) {
         return service.unPublishedStates(page);
     }
 
     @GetMapping("V1/api/PublishedStates/{stateId}")
-    public boolean publishedStates(@RequestHeader(name = "Authorization") String token, @PathVariable Long stateId){
-        return service.PublishedStates(stateId,token);
+    public boolean publishedStates(@RequestHeader(name = "Authorization") String token, @PathVariable Long stateId) {
+        return service.PublishedStates(stateId, token);
     }
 
 
     @GetMapping("V1/api/StateForSale/{page}/{governate}")
-    public List<StatesDTO> getStateForSale(@PathVariable int page,@PathVariable int governate){
-        return service.getStateForSale(page,governate);
+    public List<StatesDTO> getStateForSale(@PathVariable int page, @PathVariable int governate) {
+        return service.getStateForSale(page, governate);
     }
 
     @GetMapping("V1/api/StateForRent/{page}/{governate}")
-    public List<StatesDTO> getStateForRent(@PathVariable int page,@PathVariable int governate){
-        return service.getStateForRent(page,governate);
+    public List<StatesDTO> getStateForRent(@PathVariable int page, @PathVariable int governate) {
+        return service.getStateForRent(page, governate);
     }
 
 
@@ -96,49 +73,42 @@ public class RealStatesController implements SecuredRestController {
                                @RequestParam double latitude,
                                @RequestParam @NotNull(message = "Country is required") int country,
                                @RequestParam @NotNull(message = "Governorate is required") int governorate,
-                               @RequestParam(name = "category") @NotNull(message = "State type is required") StateType stateType,
+                               @RequestParam(name = "category") @NotNull(message = "State type is required") Category category,
                                @RequestParam(name = "property_type") int propertyType,
+                               @RequestParam(name = "property_type") int propertySubType,
                                @RequestParam(name = "ownership_type") int ownershipType,
                                @RequestParam(name = "building_age") int buildingAge,
                                @RequestParam(name = "address") String address,
                                @RequestParam(name = "payment_method") PaymentMethod paymentMethod,
-                               @RequestParam(name = "features",required = false) List<Integer> features,
+                               @RequestParam(name = "features", required = false) List<Integer> features,
 
 
                                @RequestParam List<MultipartFile> attachments) throws IOException {
         return service.addNewState(description,
-                area,numOfBedRooms,garageSize,numOfBathRooms,numOfStorey,price,longitude,latitude,country,governorate,stateType,attachments,token,
-                propertyType, ownershipType, buildingAge, address, paymentMethod, features);
+                area, numOfBedRooms, garageSize, numOfBathRooms, numOfStorey, price, longitude, latitude, country, governorate, category, attachments, token,
+                propertyType, ownershipType, buildingAge, address, paymentMethod, features,propertySubType);
     }
-
 
 
     @GetMapping("/V1/api/stateAttachment/{fileName}")
 //    @Cacheable(cacheNames = "StateAttachment", key = "'file_' + #fileName")
     public ResponseEntity<?> getStateAttachment(@PathVariable String fileName) {
-       return attachmentService.getStateAttachment(fileName);
+        return attachmentService.getStateAttachment(fileName);
     }
-
-    @GetMapping("/V1/api/AllGovernate")
-//    @CacheEvict(value = {"SaleStates","RentalStates"})
-    public List<LookUpData> getAllGovernate(){
-        return service.getAllGovernate();
-    }
-
 
     @GetMapping("/V1/api/resetCache")
-    public void resetCache(){
+    public void resetCache() {
 
     }
 
 
-
-
-    public record AppSections(){}
+    public record AppSections() {
+    }
 
     public record LookUpData(
             int code,
             String value
-    ){}
+    ) {
+    }
 
 }

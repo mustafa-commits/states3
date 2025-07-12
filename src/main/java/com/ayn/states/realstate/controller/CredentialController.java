@@ -33,7 +33,7 @@ public class CredentialController implements SecuredRestController {
 
     @GetMapping("/V1/api/getToken")
     public String getToken(Authentication authentication) {
-        return tokenService.generateToken(authentication, 0);
+        return tokenService.generateToken(authentication, 1);
     }
 
 

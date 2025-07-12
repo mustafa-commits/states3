@@ -13,7 +13,7 @@ import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 
 @SpringBootApplication
-@EnableCaching
+//@EnableCaching
 @EnableAsync
 public class StatesApplication extends SpringBootServletInitializer {
 	public static void main(String[] args) {
