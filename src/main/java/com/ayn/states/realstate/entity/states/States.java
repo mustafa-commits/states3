@@ -86,7 +86,7 @@ public class States {
 
     private LocalDateTime publishedAt;
 
-    private int country;
+    private int country = 1;
 
     private int governorate;
 
@@ -98,8 +98,6 @@ public class States {
     @Column(name = "state_type", nullable = false)
     @NotNull
     private Category category;
-
-
 
 
     @OneToMany(mappedBy = "states",
@@ -124,7 +122,7 @@ public class States {
         attachment.setStates(null);
     }
 
-    public States(String description, int area, int numOfRooms, int garageSize, int numOfBathRooms, int numOfStorey, long price, double longitude, double latitude, int createdUser, Integer modifiedUser, Integer publishedBy, LocalDateTime publishedAt, int country, int governorate, Category category,
+    public States(String description, int area, int numOfRooms, int garageSize, int numOfBathRooms, int numOfStorey, long price, double longitude, double latitude, int createdUser, Integer modifiedUser, Integer publishedBy, LocalDateTime publishedAt, int governorate, Category category,
                   int propertyType,int ownershipType,int buildingAge,String address, PaymentMethod paymentMethod,int propertySubType) {
         this.description = description;
         this.area = area;
@@ -139,7 +137,6 @@ public class States {
         this.modifiedUser = modifiedUser;
         this.publishedBy = publishedBy;
         this.publishedAt = publishedAt;
-        this.country = country;
         this.governorate = governorate;
         this.category = category;
         this.propertyType = propertyType;

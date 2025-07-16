@@ -61,8 +61,14 @@ public class StatesService {
 
 
 //    @Cacheable(value = "SaleStates", key = "#page")
-    public List<StatesDTO> getStateForSale(int page) {
+    public List<StatesDTO> getStateForSale(int page, String token) {
 //        return statesRepository.findByStateTypeAndIsActiveTrue(Category.FOR_SALE, PageRequest.of(page, 20, Sort.by(Sort.Direction.DESC, "publishedAt")));
+
+        Long userId = null;
+        if (tokenService.decodeToken(token.substring(7)).getSubject().equals("0")){
+            userId=tokenService.decodeToken(token.substring(7)).getClaim("UnRegistered");
+        }else
+            userId=Long.parseLong(tokenService.decodeToken(token.substring(7)).getSubject());
 
         return jdbcClient.sql("""
                         SELECT s.state_id AS stateId, s.description, s.area, s.num_of_rooms AS numOfRooms ,s.garage_size AS garageSize,
@@ -74,7 +80,8 @@ public class StatesService {
                                          GROUP_CONCAT(DISTINCT p.feature_code SEPARATOR  ',') AS features,
                                          CONCAT(z.first_name, ' ',z.last_name) AS publisherName,
                                          z.phone AS publisherPhone,
-                                         s.payment_method
+                                         count(distinct ua.id)  as viewCount,
+                                        case when ua2.id is not null then true else false end as isFavorite
                     FROM states s
                     left JOIN attachment a ON s.state_id = a.state_id
                     JOIN fnd_governorates g ON s.governorate = g.code
@@ -84,13 +91,16 @@ public class StatesService {
                     JOIN lookup l3 ON s.property_sub_type = l3.code AND l3.type_code=1
                     LEFT JOIN property_features p ON s.state_id = p.state_id
                     JOIN zone_users z ON s.created_user = z.user_id
+                    LEFT JOIN user_actions ua ON ua.state_id = s.state_id AND ua.action_type = 'VIEW'
+                    LEFT JOIN user_actions ua2 ON ua2.state_id = s.state_id AND ua2.action_type = 'FAVORITE' and ( ua2.app_user_id =:userId or ua2.unregistered_id =:userId)
                     WHERE s.is_active = 1  AND s.state_type = 'FOR_SALE' AND s.published_at IS NOT NULL
                       group by s.state_id, s.description, s.area, s.num_of_rooms,s.garage_size,
                                                s.num_of_bath_rooms, s.num_of_storey,s.property_type,s.ownership_type, s.price, s.longitude, s.latitude, s.is_active,s.building_age
                                         ,s.created_user, s.published_at, c.name, g.name_ar , s.state_type,s.address,s.payment_method
                     ORDER BY s.published_at DESC
                     LIMIT :offset, 10""")
-                .param("offset",(page - 1) * 10).param("link",stateLink).query(StatesDTO.class).list();
+                .param("offset",(page - 1) * 10).param("link",stateLink)
+                .param("userId",userId).query(StatesDTO.class).list();
 
 
 //                .map(statesMapper::toDto);
@@ -145,7 +155,13 @@ public class StatesService {
 
 
 //    @Cacheable(value = "RentalStates", key = "#page")
-    public List<StatesDTO> getStateForRent(int page) {
+    public List<StatesDTO> getStateForRent(int page, String token) {
+
+        Long userId = null;
+        if (tokenService.decodeToken(token.substring(7)).getSubject().equals("0")){
+            userId=tokenService.decodeToken(token.substring(7)).getClaim("UnRegistered");
+        }else
+            userId=Long.parseLong(tokenService.decodeToken(token.substring(7)).getSubject());
         List<StatesDTO> list = jdbcClient.sql("""
                             SELECT s.state_id AS stateId, s.description, s.area, s.num_of_rooms AS numOfRooms ,s.garage_size AS garageSize,
                                                s.num_of_bath_rooms AS numOfBathRooms, s.num_of_storey AS numOfStorey,s.num_of_bed_rooms AS numOfBedrooms, l.value AS propertyType 
@@ -156,7 +172,8 @@ public class StatesService {
                                          GROUP_CONCAT(DISTINCT p.feature_code SEPARATOR  ',') AS features,
                                          CONCAT(z.first_name, ' ',z.last_name) AS publisherName,
                                          z.phone AS publisherPhone,
-                                         s.payment_method
+                                         count(distinct ua.id)  as viewCount,
+                                        case when ua2.id is not null then true else false end as isFavorite
                         FROM states s
                         left JOIN attachment a ON s.state_id = a.state_id
                         JOIN fnd_governorates g ON s.governorate = g.code
@@ -166,13 +183,16 @@ public class StatesService {
                         JOIN lookup l3 ON s.property_sub_type = l3.code AND l3.type_code=1
                         LEFT JOIN property_features p ON s.state_id = p.state_id
                         JOIN zone_users z ON s.created_user = z.user_id
+                        LEFT JOIN user_actions ua ON ua.state_id = s.state_id AND ua.action_type = 'VIEW'
+                        LEFT JOIN user_actions ua2 ON ua2.state_id = s.state_id AND ua2.action_type = 'FAVORITE' and ( ua2.app_user_id =:userId or ua2.unregistered_id =:userId)
                         WHERE s.is_active = 1  AND s.state_type = 'FOR_RENT' AND s.published_at IS NOT NULL
                           group by s.state_id, s.description, s.area, s.num_of_rooms,s.garage_size,
                                                    s.num_of_bath_rooms, s.num_of_storey,s.property_type,s.ownership_type, s.price, s.longitude, s.latitude, s.is_active
                                             ,s.created_user, s.published_at, g.name_ar , s.state_type, s.state_type ,s.address,s.payment_method,s.building_age ,l3.value
                         ORDER BY s.published_at DESC
                         LIMIT :startFrom, 10""")
-                .param("startFrom", (page - 1) * 10).param("link", stateLink).query(StatesDTO.class).list();
+                .param("startFrom", (page - 1) * 10).param("link", stateLink)
+                .param("userId",userId).query(StatesDTO.class).list();
 
         System.out.print(list.get(0).getAttachments());
         return list;
@@ -181,7 +201,13 @@ public class StatesService {
                 //.map(statesMapper::toDto);
     }
 
-    public List<StatesDTO> getStateForRent(int page, int governate) {
+    public List<StatesDTO> getStateForRent(int page, int governate,String token) {
+
+        Long userId = null;
+        if (tokenService.decodeToken(token.substring(7)).getSubject().equals("0")){
+            userId=tokenService.decodeToken(token.substring(7)).getClaim("UnRegistered");
+        }else
+            userId=Long.parseLong(tokenService.decodeToken(token.substring(7)).getSubject());
         return jdbcClient.sql("""
                             SELECT s.state_id AS stateId, s.description, s.area, s.num_of_rooms AS numOfRooms ,s.garage_size AS garageSize,
                                                s.num_of_bath_rooms AS numOfBathRooms, s.num_of_storey AS numOfStorey,s.num_of_bed_rooms AS numOfBedrooms, l.value AS propertyType
@@ -192,7 +218,8 @@ public class StatesService {
                                          GROUP_CONCAT(DISTINCT p.feature_code SEPARATOR  ',') AS features,
                                          CONCAT(z.first_name, ' ',z.last_name) AS publisherName,
                                          z.phone AS publisherPhone,
-                                         s.payment_method
+                                         count(distinct ua.id)  as viewCount,
+                                        case when ua2.id is not null then true else false end as isFavorite
                         FROM states s
                         left JOIN attachment a ON s.state_id = a.state_id
                         JOIN fnd_governorates g ON s.governorate = g.code
@@ -202,17 +229,27 @@ public class StatesService {
                         JOIN lookup l3 ON s.property_sub_type = l3.code AND l3.type_code=1
                         LEFT JOIN property_features p ON s.state_id = p.state_id
                         JOIN zone_users z ON s.created_user = z.user_id
+                        LEFT JOIN user_actions ua ON ua.state_id = s.state_id AND ua.action_type = 'VIEW'
+                        LEFT JOIN user_actions ua2 ON ua2.state_id = s.state_id AND ua2.action_type = 'FAVORITE' and ( ua2.app_user_id =:userId or ua2.unregistered_id =:userId)
                         WHERE s.is_active = 1  AND s.state_type = 'FOR_RENT' AND s.published_at IS NOT NULL AND s.governorate = :governate
                           group by s.state_id, s.description, s.area, s.num_of_rooms,s.garage_size,
                                                    s.num_of_bath_rooms, s.num_of_storey,s.property_type,s.ownership_type, s.price, s.longitude, s.latitude, s.is_active
                                             ,s.created_user, s.published_at, g.name_ar , s.state_type, s.state_type ,s.address,s.payment_method,s.building_age ,l3.value
                         ORDER BY s.published_at DESC
                         LIMIT :startFrom, 10""")
-                .param("startFrom", (page - 1) * 10).param("link", stateLink).param("governate",governate).query(StatesDTO.class).list();
+                .param("startFrom", (page - 1) * 10).param("link", stateLink).param("governate",governate)
+                .param("userId",userId).query(StatesDTO.class).list();
 //        return statesRepository.findByStateTypeAndIsActiveTrueWithGovernate(Category.FOR_RENT,governate , PageRequest.of(page, 20, Sort.by(Sort.Direction.DESC, "publishedAt")));
     }
 
-    public List<StatesDTO> getStateForSale(int page, int governate) {
+    public List<StatesDTO> getStateForSale(int page, int governate, String token) {
+
+        Long userId = null;
+        if (tokenService.decodeToken(token.substring(7)).getSubject().equals("0")){
+            userId=tokenService.decodeToken(token.substring(7)).getClaim("UnRegistered");
+        }else
+            userId=Long.parseLong(tokenService.decodeToken(token.substring(7)).getSubject());
+
         return jdbcClient.sql("""
                             SELECT s.state_id AS stateId, s.description, s.area, s.num_of_rooms AS numOfRooms ,s.garage_size AS garageSize,
                                                s.num_of_bath_rooms AS numOfBathRooms, s.num_of_storey AS numOfStorey,s.num_of_bed_rooms AS numOfBedrooms, l.value AS propertyType
@@ -223,7 +260,8 @@ public class StatesService {
                                          GROUP_CONCAT(DISTINCT p.feature_code SEPARATOR  ',') AS features,
                                          CONCAT(z.first_name, ' ',z.last_name) AS publisherName,
                                          z.phone AS publisherPhone,
-                                         s.payment_method
+                                         count(distinct ua.id)  as viewCount,
+                                        case when ua2.id is not null then true else false end as isFavorite
                         FROM states s
                         left JOIN attachment a ON s.state_id = a.state_id
                         JOIN fnd_governorates g ON s.governorate = g.code
@@ -233,13 +271,16 @@ public class StatesService {
                         JOIN lookup l3 ON s.property_sub_type = l3.code AND l3.type_code=1
                         LEFT JOIN property_features p ON s.state_id = p.state_id
                         JOIN zone_users z ON s.created_user = z.user_id
+                        LEFT JOIN user_actions ua ON ua.state_id = s.state_id AND ua.action_type = 'VIEW'
+                        LEFT JOIN user_actions ua2 ON ua2.state_id = s.state_id AND ua2.action_type = 'FAVORITE' and ( ua2.app_user_id =:userId or ua2.unregistered_id =:userId)
                         WHERE s.is_active = 1  AND s.state_type = 'FOR_SALE' AND s.published_at IS NOT NULL AND s.governorate = :governate
                           group by s.state_id, s.description, s.area, s.num_of_rooms,s.garage_size,
                                                    s.num_of_bath_rooms, s.num_of_storey,s.property_type,s.ownership_type, s.price, s.longitude, s.latitude, s.is_active
                                             ,s.created_user, s.published_at, g.name_ar , s.state_type, s.state_type ,s.address,s.payment_method,s.building_age ,l3.value
                         ORDER BY s.published_at DESC
                         LIMIT :startFrom, 10""")
-                .param("startFrom", (page - 1) * 10).param("link", stateLink).param("governate",governate).query(StatesDTO.class).list();
+                .param("startFrom", (page - 1) * 10).param("link", stateLink).param("governate",governate)
+                .param("userId",userId).query(StatesDTO.class).list();
 //        return statesRepository.findByStateTypeAndIsActiveTrueWithGovernate(Category.FOR_SALE,governate , PageRequest.of(page, 20, Sort.by(Sort.Direction.DESC, "publishedAt")));
     }
 
@@ -247,7 +288,7 @@ public class StatesService {
 
 
 //    @CacheEvict(value = {"SaleStates","RentalStates"})
-    public boolean addNewState(@NotBlank(message = "Description is required") String description, @Min(value = 1, message = "Area must be greater than 0") int area, @Min(value = 0, message = "Number of rooms cannot be negative") int numOfRooms, @Min(value = 0, message = "Garage size cannot be negative") int garageSize, @Min(value = 0, message = "Number of bathrooms cannot be negative") int numOfBathRooms, @Min(value = 0, message = "Number of storeys cannot be negative") int numOfStorey, @Min(value = 1, message = "Price must be greater than 0") long price, double longitude, double latitude, @NotNull(message = "Country is required") int country, @NotNull(message = "Governorate is required") int governorate, @NotNull(message = "State type is required") Category category, List<MultipartFile> attachments, String token,
+    public boolean addNewState(@NotBlank(message = "Description is required") String description, @Min(value = 1, message = "Area must be greater than 0") int area, @Min(value = 0, message = "Number of rooms cannot be negative") int numOfRooms, @Min(value = 0, message = "Garage size cannot be negative") int garageSize, @Min(value = 0, message = "Number of bathrooms cannot be negative") int numOfBathRooms, @Min(value = 0, message = "Number of storeys cannot be negative") int numOfStorey, @Min(value = 1, message = "Price must be greater than 0") long price, double longitude, double latitude, @NotNull(message = "Governorate is required") int governorate, @NotNull(message = "State type is required") Category category, List<MultipartFile> attachments, String token,
                                int propertyType, int ownershipType, int buildingAge, String address, PaymentMethod paymentMethod, List<Integer> features, int propertySubType) throws IOException {
 
 
@@ -258,7 +299,7 @@ public class StatesService {
 
         var state = statesRepository.save(
                 new States(description, area, numOfRooms, garageSize, numOfBathRooms, numOfStorey, price, longitude, latitude,
-                        Integer.parseInt(tokenService.decodeToken(token.substring(7)).getSubject()), null, null, null, country, governorate, category,
+                        Integer.parseInt(tokenService.decodeToken(token.substring(7)).getSubject()), null, null, null,  governorate, category,
                         propertyType, ownershipType, buildingAge,address,paymentMethod,propertySubType)
         );
 
@@ -278,7 +319,7 @@ public class StatesService {
                     if (file.getSize() > 4998000)
                         throw new UnauthorizedException("حجم الملف غير مسموح به اكبر من 5MB");
                 }
-                if (file != null) {
+                if (!file.isEmpty()) {
                     String originalFilename = file.getOriginalFilename();
                     newfileNames.add(System.currentTimeMillis() + originalFilename.substring(originalFilename.lastIndexOf(".")));
                     filespath.add(basePath + newfileNames.get(i));
@@ -313,7 +354,8 @@ public class StatesService {
                                          GROUP_CONCAT(DISTINCT p.feature_code SEPARATOR  ',') AS features,
                                          CONCAT(z.first_name, ' ',z.last_name) AS publisherName,
                                          z.phone AS publisherPhone,
-                                         s.payment_method
+                                         0  as viewCount,
+                                        false isFavorite
                     FROM states s
                     left JOIN attachment a ON s.state_id = a.state_id
                     JOIN fnd_governorates g ON s.governorate = g.code

@@ -7,6 +7,7 @@ import com.ayn.states.realstate.enums.SignUpStatus;
 import com.ayn.states.realstate.exception.UnauthorizedException;
 import com.ayn.states.realstate.models.user.UserCheckNumber;
 import com.ayn.states.realstate.models.user.UserNumberCheckRequest;
+import com.ayn.states.realstate.service.favoriteService.FavoriteService;
 import com.ayn.states.realstate.service.token.TokenService;
 import com.ayn.states.realstate.service.users.UserService;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -30,6 +31,10 @@ public class CredentialController implements SecuredRestController {
 
     @Autowired
     UserService userService;
+
+    @Autowired
+    private FavoriteService favoriteService;
+
 
     @GetMapping("/V1/api/getToken")
     public String getToken(Authentication authentication) {
@@ -72,5 +77,9 @@ public class CredentialController implements SecuredRestController {
 
 
 
+    @GetMapping("/V1/api/unRegisteredUser")
+    public String registerUser(){
+        return tokenService.generateToken(favoriteService.registerUser());
+    }
 
 }

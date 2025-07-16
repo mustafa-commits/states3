@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.ayn.states</groupId>
 	<artifactId>states</artifactId>
-	<version>1.6</version>
+	<version>1.11</version>
 	<packaging>war</packaging>
 	<name>states</name>
 	<description>Demo project for Spring Boot</description>
@@ -194,27 +194,27 @@
 					</excludes>
 				</configuration>
 			</plugin>
-<!--			<plugin>-->
-<!--				<groupId>org.apache.maven.plugins</groupId>-->
-<!--				<artifactId>maven-antrun-plugin</artifactId>-->
-<!--				<version>3.1.0</version>-->
-<!--				<executions>-->
-<!--					<execution>-->
-<!--						<id>copy-after-package</id>-->
-<!--						<phase>verify</phase> &lt;!&ndash; After package phase &ndash;&gt;-->
-<!--						<configuration>-->
-<!--							<target>-->
-<!--								<copy todir="\\APISERVER\\webapps">-->
-<!--									<fileset dir="${project.build.directory}" includes="realState##${project.version}.war"/>-->
-<!--								</copy>-->
-<!--							</target>-->
-<!--						</configuration>-->
-<!--						<goals>-->
-<!--							<goal>run</goal>-->
-<!--						</goals>-->
-<!--					</execution>-->
-<!--				</executions>-->
-<!--			</plugin>-->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<version>3.1.0</version>
+				<executions>
+					<execution>
+						<id>copy-after-package</id>
+						<phase>verify</phase> <!-- After package phase -->
+						<configuration>
+							<target>
+								<copy todir="\\APISERVER\\webapps">
+									<fileset dir="${project.build.directory}" includes="realState##${project.version}.war"/>
+								</copy>
+							</target>
+						</configuration>
+						<goals>
+							<goal>run</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 	</build>
 	<repositories>

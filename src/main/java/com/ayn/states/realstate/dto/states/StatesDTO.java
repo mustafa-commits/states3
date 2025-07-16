@@ -50,4 +50,7 @@ public class StatesDTO {
 
     private String publisherName;
     private String publisherPhone;
+
+    private int viewCount;
+    private boolean isFavorite;
 }

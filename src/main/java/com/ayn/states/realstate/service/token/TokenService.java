@@ -38,6 +38,23 @@ public class TokenService {
         )).getTokenValue();
     }
 
+    public String generateToken(long id) {
+        Instant now = Instant.now();
+        Instant expiry = now.plus(Duration.ofDays(365L * 5));
+
+        return jwtEncoder.encode(JwtEncoderParameters.from(
+                JwtClaimsSet.builder()
+                        .issuer("AL-AYN.org")
+                        .audience(List.of("development_center"))
+                        .issuedAt(now)
+                        .expiresAt(expiry)
+                        .subject("0")
+                        .claim("UnRegistered", id)
+                        .claim("scope", "zoneUser")
+                        .build()
+        )).getTokenValue();
+    }
+
 
     public Jwt decodeToken(String token) {
         return jwtDecoder.decode(token);

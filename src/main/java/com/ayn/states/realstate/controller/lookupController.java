@@ -1,6 +1,8 @@
 package com.ayn.states.realstate.controller;
 
 import com.ayn.states.realstate.SecuredRestController;
+import com.ayn.states.realstate.entity.lookup.LookUp;
+import com.ayn.states.realstate.repository.lookup.LookUpRepo;
 import com.ayn.states.realstate.service.sections.SectionService;
 import com.ayn.states.realstate.service.states.StateFeaturesService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +36,17 @@ public class lookupController implements SecuredRestController {
     @GetMapping("/V1/api/StateFeatures")
     public List<RealStatesController.LookUpData> getStateFeatures() {
         return stateFeaturesService.getStateFeatures();
+    }
+
+
+    @GetMapping("/V1/api/propertyType")
+    public List<LookUp> getPropertyType() {
+        return stateFeaturesService.getPropertyType();
+    }
+
+    @GetMapping("/V1/api/ownershipType")
+    public List<RealStatesController.LookUpData> getownershipType() {
+        return stateFeaturesService.getOwnershipType();
     }
 
 

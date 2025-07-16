@@ -23,6 +23,7 @@ import com.google.i18n.phonenumbers.PhoneNumberUtil;
 import com.google.i18n.phonenumbers.Phonenumber;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -54,6 +55,25 @@ public class UserService {
     TokenService tokenService;
 
 
+//    @Bean
+//    public String otp(){
+//        System.out.println(generateRandomPassword(1,CodeSend.WHATS_APP,"7737678540"));
+//        System.out.println(generateRandomPassword(1,CodeSend.WHATS_APP,"7737678540"));
+//        System.out.println(generateRandomPassword(1,CodeSend.WHATS_APP,"7737678540"));
+//        System.out.println(generateRandomPassword(1,CodeSend.WHATS_APP,"7737678540"));
+//        System.out.println(generateRandomPassword(1,CodeSend.WHATS_APP,"7737678540"));
+//        System.out.println(generateRandomPassword(1,CodeSend.WHATS_APP,"7737678540"));
+//        System.out.println(generateRandomPassword(1,CodeSend.WHATS_APP,"7737678540"));
+//        System.out.println(generateRandomPassword(1,CodeSend.WHATS_APP,"7737678540"));
+//        System.out.println(generateRandomPassword(1,CodeSend.WHATS_APP,"7737678540"));
+//        System.out.println(generateRandomPassword(1,CodeSend.WHATS_APP,"7737678540"));
+//        System.out.println(generateRandomPassword(1,CodeSend.WHATS_APP,"7737678540"));
+//        System.out.println(generateRandomPassword(1,CodeSend.WHATS_APP,"7737678540"));
+//        System.out.println(generateRandomPassword(1,CodeSend.WHATS_APP,"7737678540"));
+//        return "";
+//    }
+
+
     public UserCheckNumber login(String userNum, String countryCode, CodeSend codeSend) {
         userNum = convertArabicNumbersToEnglish(userNum);
 
@@ -79,9 +99,7 @@ public class UserService {
             int code = generateRandomPassword(userId, codeSend, fullPhone);
             whatsAppService.sendMessage(
                     fullPhone,
-                    new StringBuilder()
-                            .append('*').append(code).append("* هو كود التحقق الخاص بك. للحفاظ على معلوماتك، لا تشارك هذا الكود مع أي شخص.\n")
-                            .toString()
+                    "*" + code + "* هو كود التحقق الخاص بك. للحفاظ على معلوماتك، لا تشارك هذا الكود مع أي شخص.\n"
             );
             return new UserCheckNumber(new UserCheck(LoginStatus.REGISTER, fullPhone), userId);
         } else if (codeSend == CodeSend.TELEGRAM) {
@@ -124,13 +142,15 @@ public class UserService {
     }
 
 
+
     public int generateRandomPassword(int id, CodeSend codeSend, String phone) {
         int code = 0;
-        ThreadLocalRandom random = ThreadLocalRandom.current();
-
-        for (int i = 0; i < 6; i++) {
-            code = code * 10 + random.nextInt(10);
-        }
+//        ThreadLocalRandom random = ThreadLocalRandom.current();
+//
+//        for (int i = 0; i < 6; i++) {
+//            code = code * 10 + random.nextInt(10);
+//        }
+        code = ThreadLocalRandom.current().nextInt(0, 1_000_000);
         userVerificationRepo.save(new UserVerification(id, code, codeSend, phone));
         return code;
     }

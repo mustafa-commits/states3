@@ -29,13 +29,13 @@ public class RealStatesController implements SecuredRestController {
     private AttachmentService attachmentService;
 
     @GetMapping("V1/api/StateForSale/{page}")
-    public List<StatesDTO> getStateForSale(@PathVariable int page) {
-        return service.getStateForSale(page);
+    public List<StatesDTO> getStateForSale(@RequestHeader(name = "Authorization") String token,@PathVariable int page) {
+        return service.getStateForSale(page,token);
     }
 
     @GetMapping("V1/api/StateForRent/{page}")
-    public List<StatesDTO> getStateForRent(@PathVariable int page) {
-        return service.getStateForRent(page);
+    public List<StatesDTO> getStateForRent(@RequestHeader(name = "Authorization") String token,@PathVariable int page) {
+        return service.getStateForRent(page,token);
     }
 
     @GetMapping("V1/api/unPublishedStates/{page}")
@@ -43,20 +43,20 @@ public class RealStatesController implements SecuredRestController {
         return service.unPublishedStates(page);
     }
 
-    @GetMapping("V1/api/PublishedStates/{stateId}")
+    @GetMapping("V1/api/PublishState/{stateId}")
     public boolean publishedStates(@RequestHeader(name = "Authorization") String token, @PathVariable Long stateId) {
         return service.PublishedStates(stateId, token);
     }
 
 
     @GetMapping("V1/api/StateForSale/{page}/{governate}")
-    public List<StatesDTO> getStateForSale(@PathVariable int page, @PathVariable int governate) {
-        return service.getStateForSale(page, governate);
+    public List<StatesDTO> getStateForSale(@RequestHeader(name = "Authorization") String token,@PathVariable int page, @PathVariable int governate) {
+        return service.getStateForSale(page, governate,token);
     }
 
     @GetMapping("V1/api/StateForRent/{page}/{governate}")
-    public List<StatesDTO> getStateForRent(@PathVariable int page, @PathVariable int governate) {
-        return service.getStateForRent(page, governate);
+    public List<StatesDTO> getStateForRent(@RequestHeader(name = "Authorization") String token,@PathVariable int page, @PathVariable int governate) {
+        return service.getStateForRent(page, governate,token);
     }
 
 
@@ -71,11 +71,11 @@ public class RealStatesController implements SecuredRestController {
                                @RequestParam @Min(value = 1, message = "Price must be greater than 0") long price,
                                @RequestParam double longitude,
                                @RequestParam double latitude,
-                               @RequestParam @NotNull(message = "Country is required") int country,
+//                               @RequestParam @NotNull(message = "Country is required") int country,
                                @RequestParam @NotNull(message = "Governorate is required") int governorate,
                                @RequestParam(name = "category") @NotNull(message = "State type is required") Category category,
                                @RequestParam(name = "property_type") int propertyType,
-                               @RequestParam(name = "property_type") int propertySubType,
+                               @RequestParam(name = "property_sub_type") int propertySubType,
                                @RequestParam(name = "ownership_type") int ownershipType,
                                @RequestParam(name = "building_age") int buildingAge,
                                @RequestParam(name = "address") String address,
@@ -85,7 +85,7 @@ public class RealStatesController implements SecuredRestController {
 
                                @RequestParam List<MultipartFile> attachments) throws IOException {
         return service.addNewState(description,
-                area, numOfBedRooms, garageSize, numOfBathRooms, numOfStorey, price, longitude, latitude, country, governorate, category, attachments, token,
+                area, numOfBedRooms, garageSize, numOfBathRooms, numOfStorey, price, longitude, latitude,  governorate, category, attachments, token,
                 propertyType, ownershipType, buildingAge, address, paymentMethod, features,propertySubType);
     }
 
