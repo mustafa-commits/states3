@@ -150,7 +150,7 @@ public class UserService {
 //        for (int i = 0; i < 6; i++) {
 //            code = code * 10 + random.nextInt(10);
 //        }
-        code = ThreadLocalRandom.current().nextInt(0, 1_000_000);
+        code = ThreadLocalRandom.current().nextInt(100000, 1_000_000);
         userVerificationRepo.save(new UserVerification(id, code, codeSend, phone));
         return code;
     }

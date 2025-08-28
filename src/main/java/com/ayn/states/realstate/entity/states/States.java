@@ -13,6 +13,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.Formula;
 import org.hibernate.annotations.UpdateTimestamp;
 import java.util.List;
 
@@ -110,6 +111,10 @@ public class States {
             orphanRemoval = true,
             cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<PropertyFeatures> propertyFeatures = new ArrayList<>();
+
+
+    @Formula("(SELECT COUNT(DISTINCT COALESCE(ua.app_user_id, ua.unregistered_id)) FROM user_actions ua WHERE ua.state_id = state_id AND ua.action_type = 'VIEW')")
+    private int viewsCount;
 
 
     public void addAttachment(Attachments attachment) {

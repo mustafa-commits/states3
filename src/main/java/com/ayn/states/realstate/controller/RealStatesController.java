@@ -1,11 +1,15 @@
 package com.ayn.states.realstate.controller;
 
 import com.ayn.states.realstate.SecuredRestController;
+import com.ayn.states.realstate.dto.NearestStateRequest;
 import com.ayn.states.realstate.dto.states.StatesDTO;
+import com.ayn.states.realstate.dto.states.StatesDTO2;
 import com.ayn.states.realstate.enums.Category;
 import com.ayn.states.realstate.enums.PaymentMethod;
 import com.ayn.states.realstate.service.attachment.AttachmentService;
 import com.ayn.states.realstate.service.states.StatesService;
+import io.swagger.v3.oas.annotations.Parameter;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -27,6 +31,26 @@ public class RealStatesController implements SecuredRestController {
 
     @Autowired
     private AttachmentService attachmentService;
+
+    record AllStates(int page, int governate, int propertySubType, int propertyType,String sortBy, String order){}
+
+    @PostMapping("V1/api/AllStates/{page}")
+    public List<StatesDTO> allStates(
+    @RequestParam int page,
+    @RequestParam(required = false) Integer governate,
+    @RequestParam(required = false) Integer propertyType,
+    @RequestParam(required = false) Integer propertySubType,
+    @Parameter(description = "price date") @RequestParam(required = false) String sortBy,
+    @Parameter(description = "asc desc") @RequestParam(required = false) String order,
+    @Parameter(hidden = true) @RequestHeader("Authorization") String token
+) {
+        return service.getALLState(page, governate, token, propertySubType, propertyType, sortBy, order);
+    }
+
+    @PostMapping("V1/api/myStates")
+    public List<StatesDTO> myStates(@RequestHeader("Authorization") String token) {
+        return service.getmyState(token);
+    }
 
     @GetMapping("V1/api/StateForSale/{page}")
     public List<StatesDTO> getStateForSale(@RequestHeader(name = "Authorization") String token,@PathVariable int page) {
@@ -57,6 +81,16 @@ public class RealStatesController implements SecuredRestController {
     @GetMapping("V1/api/StateForRent/{page}/{governate}")
     public List<StatesDTO> getStateForRent(@RequestHeader(name = "Authorization") String token,@PathVariable int page, @PathVariable int governate) {
         return service.getStateForRent(page, governate,token);
+    }
+
+    @PostMapping("V1/api/NearestStatesForRent/{page}")
+    public List<StatesDTO2> getNearestStatesForRent(@RequestHeader(name = "Authorization") String token,@PathVariable int page,@Valid @RequestBody NearestStateRequest nearestStateRequest) {
+        return service.getNearestStatesForRent(page, nearestStateRequest,token);
+    }
+
+    @PostMapping("V1/api/NearestStatesForSale/{page}")
+    public List<StatesDTO2> getNearestStatesForSale(@RequestHeader(name = "Authorization") String token, @PathVariable int page, @Valid @RequestBody NearestStateRequest nearestStateRequest) {
+        return service.getNearestStatesForSale(page, nearestStateRequest,token);
     }
 
 

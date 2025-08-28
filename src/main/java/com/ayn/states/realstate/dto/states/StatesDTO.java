@@ -39,7 +39,7 @@ public class StatesDTO {
 //    private Integer modifiedUser;
 //    private Integer publishedBy;
     private LocalDateTime publishedAt;
-    private String country;
+//    private String country;
     private String governorate;
     private Category category;
     private String address;
@@ -53,4 +53,8 @@ public class StatesDTO {
 
     private int viewCount;
     private boolean isFavorite;
+
+    private int favCount;
+
+
 }

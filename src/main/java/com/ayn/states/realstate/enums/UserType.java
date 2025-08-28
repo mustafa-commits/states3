@@ -5,6 +5,5 @@ public enum UserType {
     AGENT,
     BROKER,
     BUYER,
-    APP,
-    DASHBOARD
+    APP
 }

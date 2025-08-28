@@ -70,7 +70,7 @@ public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Excepti
             .csrf(AbstractHttpConfigurer::disable)
             .authorizeHttpRequests(auth -> auth
                     .requestMatchers("/login").hasAuthority("read")
-                    .requestMatchers("/**").permitAll()
+                    .requestMatchers("/V1/api/dashboard/auth/login/**","/V1/api/getToken/**").permitAll()
                     .requestMatchers("/v3/api-docs/**","/swagger-ui","/swagger-ui/**").permitAll()
                     .requestMatchers("/V1/api/getToken","/V1/api/resetCache/**").permitAll()
                     .requestMatchers("/V1/api/settings/GetSupportContact/**").permitAll()

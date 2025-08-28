@@ -50,7 +50,7 @@ public class Subscription {
     private Boolean analyticsAccess;
     private Boolean dashboardAccess;
 
-    @Column(nullable = false)
+    @Column(nullable = false,columnDefinition = "bit(1) NOT NULL DEFAULT b'1'")
     private Boolean active = true;
 
     private LocalDateTime createdAt;

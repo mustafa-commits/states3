@@ -11,6 +11,7 @@ import com.ayn.states.realstate.service.favoriteService.FavoriteService;
 import com.ayn.states.realstate.service.token.TokenService;
 import com.ayn.states.realstate.service.users.UserService;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -37,6 +38,7 @@ public class CredentialController implements SecuredRestController {
 
 
     @GetMapping("/V1/api/getToken")
+    @Operation(summary = "token docs", description = "description")
     public String getToken(Authentication authentication) {
         return tokenService.generateToken(authentication, 1);
     }

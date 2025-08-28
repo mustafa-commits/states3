@@ -1,0 +1,13 @@
+ALTER TABLE states
+ADD COLUMN location POINT NOT NULL;
+
+UPDATE states s
+SET s.location = ST_GeomFromText(CONCAT('POINT(', s.longitude, ' ', s.latitude, ')'))  // not recommended
+WHERE s.location is NULL;
+
+UPDATE states
+SET location = ST_SRID(POINT(longitude, latitude), 4326)
+WHERE location IS NULL;
+
+ALTER TABLE states
+ADD SPATIAL INDEX(location);

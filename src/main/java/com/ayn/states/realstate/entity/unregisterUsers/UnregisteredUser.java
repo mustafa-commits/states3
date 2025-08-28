@@ -19,7 +19,10 @@ public class UnregisteredUser {
 //    @GeneratedValue(strategy = GenerationType.IDENTITY)
 //    private Long id;
     @Id
-    @Column(name = "temp_identifier", nullable = false, unique = true)
+    @Column(name = "temp_identifier",
+            nullable = false,
+            unique = true,
+            columnDefinition = "varchar(255)")
     private Long tempIdentifier;
 
     @Column(name = "created_at", nullable = false, updatable = false)

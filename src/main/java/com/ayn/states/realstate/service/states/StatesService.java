@@ -1,7 +1,9 @@
 package com.ayn.states.realstate.service.states;
 
 
+import com.ayn.states.realstate.dto.NearestStateRequest;
 import com.ayn.states.realstate.dto.states.StatesDTO;
+import com.ayn.states.realstate.dto.states.StatesDTO2;
 import com.ayn.states.realstate.entity.att.Attachments;
 import com.ayn.states.realstate.entity.lookup.UrlImageType;
 import com.ayn.states.realstate.entity.propertyFeature.PropertyFeatures;
@@ -15,6 +17,7 @@ import com.ayn.states.realstate.repository.state.StatesRepo;
 import com.ayn.states.realstate.service.token.TokenService;
 import com.tinify.Source;
 import com.tinify.Tinify;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -75,7 +78,7 @@ public class StatesService {
                                                s.num_of_bath_rooms AS numOfBathRooms, s.num_of_storey AS numOfStorey,s.num_of_bed_rooms AS numOfBedrooms, l.value AS propertyType
                                                , l3.value AS propertySubType, l2.value AS ownershipType
                                ,s.building_age AS buildingAge , s.price, s.longitude, s.latitude
-                                        , s.published_at AS publishedAt, c.name AS country, g.name_ar AS governorate , s.state_type AS category ,
+                                        , s.published_at AS publishedAt,  g.name_ar AS governorate , s.state_type AS category ,
                                           s.address , s.payment_method AS paymentMethod ,GROUP_CONCAT(DISTINCT CONCAT(:link, a.url_image) SEPARATOR  ',') AS attachments,
                                          GROUP_CONCAT(DISTINCT p.feature_code SEPARATOR  ',') AS features,
                                          CONCAT(z.first_name, ' ',z.last_name) AS publisherName,
@@ -85,7 +88,6 @@ public class StatesService {
                     FROM states s
                     left JOIN attachment a ON s.state_id = a.state_id
                     JOIN fnd_governorates g ON s.governorate = g.code
-                    JOIN fnd_countries c ON s.country = c.code
                     JOIN lookup l ON s.property_type = l.code AND l.type_code=1 AND l.parent_id IS NULL
                     JOIN lookup l2 ON s.ownership_type = l2.code AND l2.type_code=2
                     JOIN lookup l3 ON s.property_sub_type = l3.code AND l3.type_code=1
@@ -96,7 +98,7 @@ public class StatesService {
                     WHERE s.is_active = 1  AND s.state_type = 'FOR_SALE' AND s.published_at IS NOT NULL
                       group by s.state_id, s.description, s.area, s.num_of_rooms,s.garage_size,
                                                s.num_of_bath_rooms, s.num_of_storey,s.property_type,s.ownership_type, s.price, s.longitude, s.latitude, s.is_active,s.building_age
-                                        ,s.created_user, s.published_at, c.name, g.name_ar , s.state_type,s.address,s.payment_method
+                                        ,s.created_user, s.published_at,  g.name_ar , s.state_type,s.address,s.payment_method
                     ORDER BY s.published_at DESC
                     LIMIT :offset, 10""")
                 .param("offset",(page - 1) * 10).param("link",stateLink)
@@ -167,7 +169,7 @@ public class StatesService {
                                                s.num_of_bath_rooms AS numOfBathRooms, s.num_of_storey AS numOfStorey,s.num_of_bed_rooms AS numOfBedrooms, l.value AS propertyType 
                                                , l3.value AS propertySubType ,l2.value AS ownershipType
                                ,s.building_age AS buildingAge , s.price, s.longitude, s.latitude
-                                        , s.published_at AS publishedAt, c.name AS country, g.name_ar AS governorate , s.state_type AS category ,
+                                        , s.published_at AS publishedAt,  g.name_ar AS governorate , s.state_type AS category ,
                                           s.address , s.payment_method AS paymentMethod ,GROUP_CONCAT(DISTINCT CONCAT(:link, a.url_image) SEPARATOR  ',') AS attachments,
                                          GROUP_CONCAT(DISTINCT p.feature_code SEPARATOR  ',') AS features,
                                          CONCAT(z.first_name, ' ',z.last_name) AS publisherName,
@@ -177,7 +179,6 @@ public class StatesService {
                         FROM states s
                         left JOIN attachment a ON s.state_id = a.state_id
                         JOIN fnd_governorates g ON s.governorate = g.code
-                        JOIN fnd_countries c ON s.country = c.code
                         JOIN lookup l ON s.property_type = l.code AND l.type_code=1
                         JOIN lookup l2 ON s.ownership_type = l2.code AND l2.type_code=2
                         JOIN lookup l3 ON s.property_sub_type = l3.code AND l3.type_code=1
@@ -213,7 +214,7 @@ public class StatesService {
                                                s.num_of_bath_rooms AS numOfBathRooms, s.num_of_storey AS numOfStorey,s.num_of_bed_rooms AS numOfBedrooms, l.value AS propertyType
                                                , l3.value AS propertySubType ,l2.value AS ownershipType
                                ,s.building_age AS buildingAge , s.price, s.longitude, s.latitude
-                                        , s.published_at AS publishedAt, c.name AS country, g.name_ar AS governorate , s.state_type AS category ,
+                                        , s.published_at AS publishedAt,  g.name_ar AS governorate , s.state_type AS category ,
                                           s.address , s.payment_method AS paymentMethod ,GROUP_CONCAT(DISTINCT CONCAT(:link, a.url_image) SEPARATOR  ',') AS attachments,
                                          GROUP_CONCAT(DISTINCT p.feature_code SEPARATOR  ',') AS features,
                                          CONCAT(z.first_name, ' ',z.last_name) AS publisherName,
@@ -223,7 +224,6 @@ public class StatesService {
                         FROM states s
                         left JOIN attachment a ON s.state_id = a.state_id
                         JOIN fnd_governorates g ON s.governorate = g.code
-                        JOIN fnd_countries c ON s.country = c.code
                         JOIN lookup l ON s.property_type = l.code AND l.type_code=1
                         JOIN lookup l2 ON s.ownership_type = l2.code AND l2.type_code=2
                         JOIN lookup l3 ON s.property_sub_type = l3.code AND l3.type_code=1
@@ -255,7 +255,7 @@ public class StatesService {
                                                s.num_of_bath_rooms AS numOfBathRooms, s.num_of_storey AS numOfStorey,s.num_of_bed_rooms AS numOfBedrooms, l.value AS propertyType
                                                , l3.value AS propertySubType ,l2.value AS ownershipType
                                ,s.building_age AS buildingAge , s.price, s.longitude, s.latitude
-                                        , s.published_at AS publishedAt, c.name AS country, g.name_ar AS governorate , s.state_type AS category ,
+                                        , s.published_at AS publishedAt, g.name_ar AS governorate , s.state_type AS category ,
                                           s.address , s.payment_method AS paymentMethod ,GROUP_CONCAT(DISTINCT CONCAT(:link, a.url_image) SEPARATOR  ',') AS attachments,
                                          GROUP_CONCAT(DISTINCT p.feature_code SEPARATOR  ',') AS features,
                                          CONCAT(z.first_name, ' ',z.last_name) AS publisherName,
@@ -265,7 +265,6 @@ public class StatesService {
                         FROM states s
                         left JOIN attachment a ON s.state_id = a.state_id
                         JOIN fnd_governorates g ON s.governorate = g.code
-                        JOIN fnd_countries c ON s.country = c.code
                         JOIN lookup l ON s.property_type = l.code AND l.type_code=1
                         JOIN lookup l2 ON s.ownership_type = l2.code AND l2.type_code=2
                         JOIN lookup l3 ON s.property_sub_type = l3.code AND l3.type_code=1
@@ -282,6 +281,54 @@ public class StatesService {
                 .param("startFrom", (page - 1) * 10).param("link", stateLink).param("governate",governate)
                 .param("userId",userId).query(StatesDTO.class).list();
 //        return statesRepository.findByStateTypeAndIsActiveTrueWithGovernate(Category.FOR_SALE,governate , PageRequest.of(page, 20, Sort.by(Sort.Direction.DESC, "publishedAt")));
+    }
+
+    public List<StatesDTO> getALLState(int page, Integer governate, String token,Integer propertySubType, Integer propertyType,String sortBy, String order) {
+
+        Long userId = null;
+        if (tokenService.decodeToken(token.substring(7)).getSubject().equals("0")){
+            userId=tokenService.decodeToken(token.substring(7)).getClaim("UnRegistered");
+        }else
+            userId=Long.parseLong(tokenService.decodeToken(token.substring(7)).getSubject());
+
+        return jdbcClient.sql("""
+                            SELECT s.state_id AS stateId, s.description, s.area, s.num_of_rooms AS numOfRooms ,s.garage_size AS garageSize,
+                                               s.num_of_bath_rooms AS numOfBathRooms, s.num_of_storey AS numOfStorey,s.num_of_bed_rooms AS numOfBedrooms, l.value AS propertyType
+                                               , l3.value AS propertySubType ,l2.value AS ownershipType
+                               ,s.building_age AS buildingAge , s.price, s.longitude, s.latitude
+                                        , s.published_at AS publishedAt,  g.name_ar AS governorate , s.state_type AS category ,
+                                          s.address , s.payment_method AS paymentMethod ,GROUP_CONCAT(DISTINCT CONCAT(:link, a.url_image) SEPARATOR  ',') AS attachments,
+                                         GROUP_CONCAT(DISTINCT p.feature_code SEPARATOR  ',') AS features,
+                                         CONCAT(z.first_name, ' ',z.last_name) AS publisherName,
+                                         z.phone AS publisherPhone,
+                                         count(distinct ua.id)  as viewCount,
+                                        case when ua2.id is not null then true else false end as isFavorite
+                        FROM states s
+                        left JOIN attachment a ON s.state_id = a.state_id
+                        JOIN fnd_governorates g ON s.governorate = g.code
+                        JOIN lookup l ON s.property_type = l.code AND l.type_code=1
+                        JOIN lookup l2 ON s.ownership_type = l2.code AND l2.type_code=2
+                        JOIN lookup l3 ON s.property_sub_type = l3.code AND l3.type_code=1
+                        LEFT JOIN property_features p ON s.state_id = p.state_id
+                        JOIN zone_users z ON s.created_user = z.user_id
+                        LEFT JOIN user_actions ua ON ua.state_id = s.state_id AND ua.action_type = 'VIEW'
+                        LEFT JOIN user_actions ua2 ON ua2.state_id = s.state_id AND ua2.action_type = 'FAVORITE' and ( ua2.app_user_id =:userId or ua2.unregistered_id =:userId)
+                        WHERE s.is_active = 1 AND s.published_at IS NOT NULL
+                        AND (:governate IS NULL OR s.governorate = :governate)
+                        AND (:propertyType IS NULL OR s.property_type = :propertyType)
+                        AND (:propertySubType IS NULL OR s.property_sub_type = :propertySubType)
+                        group by s.state_id, s.description, s.area, s.num_of_rooms,s.garage_size,
+                                                   s.num_of_bath_rooms, s.num_of_storey,s.property_type,s.ownership_type, s.price, s.longitude, s.latitude, s.is_active
+                                            ,s.created_user, s.published_at, g.name_ar , s.state_type, s.state_type ,s.address,s.payment_method,s.building_age ,l3.value
+                        ORDER BY CASE WHEN :sortBy = 'date' AND :order = 'asc' THEN s.published_at END ASC,
+                                                        CASE WHEN :sortBy = 'date' AND :order = 'desc' THEN s.published_at END DESC,
+                                                        CASE WHEN :sortBy = 'price' AND :order = 'asc' THEN s.price END ASC,
+                                                        CASE WHEN :sortBy = 'price' AND :order = 'desc' THEN s.price END DESC
+                        LIMIT :startFrom, 10""")
+                .param("startFrom", (page - 1) * 10).param("link", stateLink).param("governate",governate)
+                .param("propertyType",propertyType).param("propertySubType",propertySubType)
+                .param("sortBy",sortBy).param("order",order)
+                .param("userId",userId).query(StatesDTO.class).list();
     }
 
 
@@ -349,7 +396,7 @@ public class StatesService {
                                                s.num_of_bath_rooms AS numOfBathRooms, s.num_of_storey AS numOfStorey,s.num_of_bed_rooms AS numOfBedrooms, l.value AS propertyType
                                                , l3.value AS propertySubType ,l2.value AS ownershipType
                                ,s.building_age AS buildingAge , s.price, s.longitude, s.latitude
-                                        , s.published_at AS publishedAt, c.name AS country, g.name_ar AS governorate , s.state_type AS category ,
+                                        , s.published_at AS publishedAt, g.name_ar AS governorate , s.state_type AS category ,
                                           s.address , s.payment_method AS paymentMethod ,GROUP_CONCAT(DISTINCT CONCAT(:link, a.url_image) SEPARATOR  ',') AS attachments,
                                          GROUP_CONCAT(DISTINCT p.feature_code SEPARATOR  ',') AS features,
                                          CONCAT(z.first_name, ' ',z.last_name) AS publisherName,
@@ -359,7 +406,6 @@ public class StatesService {
                     FROM states s
                     left JOIN attachment a ON s.state_id = a.state_id
                     JOIN fnd_governorates g ON s.governorate = g.code
-                    JOIN fnd_countries c ON s.country = c.code
                     JOIN lookup l ON s.property_type = l.code AND l.type_code=1
                     JOIN lookup l2 ON s.ownership_type = l2.code AND l2.type_code=2
                     JOIN lookup l3 ON s.property_sub_type = l3.code AND l3.type_code=1
@@ -382,5 +428,126 @@ public class StatesService {
         state.setPublishedAt(LocalDateTime.now());
         statesRepository.save(state);
         return true;
+    }
+
+    public List<StatesDTO2> getNearestStatesForRent(int page, @Valid NearestStateRequest nearestStateRequest, String token) {
+        Long userId = null;
+        if (tokenService.decodeToken(token.substring(7)).getSubject().equals("0")){
+            userId=tokenService.decodeToken(token.substring(7)).getClaim("UnRegistered");
+        }else
+            userId=Long.parseLong(tokenService.decodeToken(token.substring(7)).getSubject());
+
+        return jdbcClient.sql("""
+                            SELECT s.state_id AS stateId, s.description, s.area, s.num_of_rooms AS numOfRooms ,s.garage_size AS garageSize,
+                                               s.num_of_bath_rooms AS numOfBathRooms, s.num_of_storey AS numOfStorey,s.num_of_bed_rooms AS numOfBedrooms, l.value AS propertyType
+                                               , l3.value AS propertySubType ,l2.value AS ownershipType
+                               ,s.building_age AS buildingAge , s.price, s.longitude, s.latitude
+                                        , s.published_at AS publishedAt,  g.name_ar AS governorate , s.state_type AS category ,
+                                          s.address , s.payment_method AS paymentMethod ,GROUP_CONCAT(DISTINCT CONCAT(:link, a.url_image) SEPARATOR  ',') AS attachments,
+                                         GROUP_CONCAT(DISTINCT p.feature_code SEPARATOR  ',') AS features,
+                                         CONCAT(z.first_name, ' ',z.last_name) AS publisherName,
+                                         z.phone AS publisherPhone,
+                                         count(distinct ua.id)  as viewCount,
+                                        case when ua2.id is not null then true else false end as isFavorite,
+                                        count(distinct ua3.id)  as favCount,
+                                        ST_Distance_Sphere(s.location, ST_SRID(POINT(:lng, :lat),4326))/ 1000 AS distance
+                        FROM states s
+                        left JOIN attachment a ON s.state_id = a.state_id
+                        JOIN fnd_governorates g ON s.governorate = g.code
+                        JOIN lookup l ON s.property_type = l.code AND l.type_code=1
+                        JOIN lookup l2 ON s.ownership_type = l2.code AND l2.type_code=2
+                        JOIN lookup l3 ON s.property_sub_type = l3.code AND l3.type_code=1
+                        LEFT JOIN property_features p ON s.state_id = p.state_id
+                        JOIN zone_users z ON s.created_user = z.user_id
+                        LEFT JOIN user_actions ua ON ua.state_id = s.state_id AND ua.action_type = 'VIEW'
+                        LEFT JOIN user_actions ua2 ON ua2.state_id = s.state_id AND ua2.action_type = 'FAVORITE' and ( ua2.app_user_id =:userId or ua2.unregistered_id =:userId)
+                        LEFT JOIN user_actions ua3 ON ua3.state_id = s.state_id AND ua3.action_type = 'FAVORITE'
+                        WHERE s.is_active = 1 AND s.published_at IS NOT NULL AND s.state_type = 'FOR_RENT'
+                          group by s.state_id, s.description, s.area, s.num_of_rooms,s.garage_size,
+                                                   s.num_of_bath_rooms, s.num_of_storey,s.property_type,s.ownership_type, s.price, s.longitude, s.latitude, s.is_active
+                                            ,s.created_user, s.published_at, g.name_ar , s.state_type, s.state_type ,s.address,s.payment_method,s.building_age ,l3.value
+                        ORDER BY distance
+                        LIMIT :startFrom, 10""")
+                .param("startFrom", (page - 1) * 10).param("link", stateLink).param("lng",nearestStateRequest.longitude()).param("lat",nearestStateRequest.latitude())
+                .param("userId",userId).query(StatesDTO2.class).list();
+
+
+    }
+
+    public List<StatesDTO2> getNearestStatesForSale(int page, @Valid NearestStateRequest nearestStateRequest, String token) {
+        Long userId = null;
+        if (tokenService.decodeToken(token.substring(7)).getSubject().equals("0")){
+            userId=tokenService.decodeToken(token.substring(7)).getClaim("UnRegistered");
+        }else
+            userId=Long.parseLong(tokenService.decodeToken(token.substring(7)).getSubject());
+
+        return jdbcClient.sql("""
+                            SELECT s.state_id AS stateId, s.description, s.area, s.num_of_rooms AS numOfRooms ,s.garage_size AS garageSize,
+                                               s.num_of_bath_rooms AS numOfBathRooms, s.num_of_storey AS numOfStorey,s.num_of_bed_rooms AS numOfBedrooms, l.value AS propertyType
+                                               , l3.value AS propertySubType ,l2.value AS ownershipType
+                               ,s.building_age AS buildingAge , s.price, s.longitude, s.latitude
+                                        , s.published_at AS publishedAt,  g.name_ar AS governorate , s.state_type AS category ,
+                                          s.address , s.payment_method AS paymentMethod ,GROUP_CONCAT(DISTINCT CONCAT(:link, a.url_image) SEPARATOR  ',') AS attachments,
+                                         GROUP_CONCAT(DISTINCT p.feature_code SEPARATOR  ',') AS features,
+                                         CONCAT(z.first_name, ' ',z.last_name) AS publisherName,
+                                         z.phone AS publisherPhone,
+                                         count(distinct ua.id)  as viewCount,
+                                        case when ua2.id is not null then true else false end as isFavorite,
+                                        count(distinct ua3.id)  as favCount,
+                                        ST_Distance_Sphere(s.location, ST_SRID(POINT(:lng, :lat),4326))/ 1000 AS distance
+                        FROM states s
+                        left JOIN attachment a ON s.state_id = a.state_id
+                        JOIN fnd_governorates g ON s.governorate = g.code
+                        JOIN lookup l ON s.property_type = l.code AND l.type_code=1
+                        JOIN lookup l2 ON s.ownership_type = l2.code AND l2.type_code=2
+                        JOIN lookup l3 ON s.property_sub_type = l3.code AND l3.type_code=1
+                        LEFT JOIN property_features p ON s.state_id = p.state_id
+                        JOIN zone_users z ON s.created_user = z.user_id
+                        LEFT JOIN user_actions ua ON ua.state_id = s.state_id AND ua.action_type = 'VIEW'
+                        LEFT JOIN user_actions ua2 ON ua2.state_id = s.state_id AND ua2.action_type = 'FAVORITE' and ( ua2.app_user_id =:userId or ua2.unregistered_id =:userId)
+                        LEFT JOIN user_actions ua3 ON ua3.state_id = s.state_id AND ua3.action_type = 'FAVORITE'
+                        WHERE s.is_active = 1 AND s.published_at IS NOT NULL AND s.state_type = 'FOR_SALE'
+                          group by s.state_id, s.description, s.area, s.num_of_rooms,s.garage_size,
+                                                   s.num_of_bath_rooms, s.num_of_storey,s.property_type,s.ownership_type, s.price, s.longitude, s.latitude, s.is_active
+                                            ,s.created_user, s.published_at, g.name_ar , s.state_type, s.state_type ,s.address,s.payment_method,s.building_age ,l3.value
+                        ORDER BY distance
+                        LIMIT :startFrom, 10""")
+                .param("startFrom", (page - 1) * 10).param("link", stateLink).param("lng",nearestStateRequest.longitude()).param("lat",nearestStateRequest.latitude())
+                .param("userId",userId).query(StatesDTO2.class).list();
+
+
+    }
+
+    public List<StatesDTO> getmyState(String token) {
+
+        return jdbcClient.sql("""
+                            SELECT s.state_id AS stateId, s.description, s.area, s.num_of_rooms AS numOfRooms ,s.garage_size AS garageSize,
+                                               s.num_of_bath_rooms AS numOfBathRooms, s.num_of_storey AS numOfStorey,s.num_of_bed_rooms AS numOfBedrooms, l.value AS propertyType
+                                               , l3.value AS propertySubType ,l2.value AS ownershipType
+                               ,s.building_age AS buildingAge , s.price, s.longitude, s.latitude
+                                        , s.published_at AS publishedAt, g.name_ar AS governorate , s.state_type AS category ,
+                                          s.address , s.payment_method AS paymentMethod ,GROUP_CONCAT(DISTINCT CONCAT(:link, a.url_image) SEPARATOR  ',') AS attachments,
+                                         GROUP_CONCAT(DISTINCT p.feature_code SEPARATOR  ',') AS features,
+                                         CONCAT(z.first_name, ' ',z.last_name) AS publisherName,
+                                         z.phone AS publisherPhone,
+                                         count(distinct ua.id)  as viewCount,
+                                        case when ua2.id is not null then true else false end as isFavorite
+                        FROM states s
+                        left JOIN attachment a ON s.state_id = a.state_id
+                        JOIN fnd_governorates g ON s.governorate = g.code
+                        JOIN lookup l ON s.property_type = l.code AND l.type_code=1
+                        JOIN lookup l2 ON s.ownership_type = l2.code AND l2.type_code=2
+                        JOIN lookup l3 ON s.property_sub_type = l3.code AND l3.type_code=1
+                        LEFT JOIN property_features p ON s.state_id = p.state_id
+                        JOIN zone_users z ON s.created_user = z.user_id
+                        LEFT JOIN user_actions ua ON ua.state_id = s.state_id AND ua.action_type = 'VIEW'
+                        LEFT JOIN user_actions ua2 ON ua2.state_id = s.state_id AND ua2.action_type = 'FAVORITE' and ( ua2.app_user_id =:userId or ua2.unregistered_id =:userId)
+                        WHERE s.is_active = 1  AND s.published_at IS NOT NULL AND s.createdUser=:userId
+                          group by s.state_id, s.description, s.area, s.num_of_rooms,s.garage_size,
+                                                   s.num_of_bath_rooms, s.num_of_storey,s.property_type,s.ownership_type, s.price, s.longitude, s.latitude, s.is_active
+                                            ,s.created_user, s.published_at, g.name_ar , s.state_type, s.state_type ,s.address,s.payment_method,s.building_age ,l3.value
+                        ORDER BY s.published_at DESC
+                     """)
+                .param("userId",Long.parseLong(tokenService.decodeToken(token.substring(7)).getSubject())).query(StatesDTO.class).list();
     }
 }

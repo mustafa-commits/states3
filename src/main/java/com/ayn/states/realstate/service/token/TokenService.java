@@ -55,6 +55,22 @@ public class TokenService {
         )).getTokenValue();
     }
 
+    public String generateTokenDashboard(long id) {
+        Instant now = Instant.now();
+        Instant expiry = now.plus(Duration.ofDays(365L * 5));
+
+        return jwtEncoder.encode(JwtEncoderParameters.from(
+                JwtClaimsSet.builder()
+                        .issuer("AL-AYN.org")
+                        .audience(List.of("development_center"))
+                        .issuedAt(now)
+                        .expiresAt(expiry)
+                        .subject(String.valueOf(id))
+                        .claim("scope", "DashboardUser")
+                        .build()
+        )).getTokenValue();
+    }
+
 
     public Jwt decodeToken(String token) {
         return jwtDecoder.decode(token);

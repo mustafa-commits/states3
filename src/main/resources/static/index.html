@@ -1,0 +1,1069 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spring Boot Health Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .dashboard-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            position: relative;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 1.1rem;
+        }
+
+        .refresh-btn {
+            position: absolute;
+            top: 30px;
+            right: 30px;
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .system-status {
+            background: white;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .system-info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            padding: 25px 30px;
+        }
+
+        .system-info-card {
+            display: flex;
+            align-items: center;
+            padding: 20px;
+            background: linear-gradient(135deg, #f8faff 0%, #ffffff 100%);
+            border-radius: 12px;
+            border: 1px solid rgba(99, 102, 241, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .system-info-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .system-info-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(99, 102, 241, 0.15);
+        }
+
+        .system-icon {
+            font-size: 2.5rem;
+            margin-right: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+            border-radius: 12px;
+        }
+
+        .system-details {
+            flex: 1;
+        }
+
+        .system-title {
+            font-size: 0.85rem;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .system-value {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 5px;
+        }
+
+        .system-subtitle {
+            font-size: 0.8rem;
+            color: #9ca3af;
+        }
+
+        .system-status-indicator {
+            display: flex;
+            align-items: center;
+            margin-top: 5px;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 8px;
+            animation: pulse-dot 2s infinite;
+        }
+
+        .status-up {
+            background: #10b981;
+            box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+        }
+
+        .status-down {
+            background: #ef4444;
+            box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
+        }
+
+        @keyframes pulse-dot {
+            0% {
+                box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+            }
+            70% {
+                box-shadow: 0 0 0 4px rgba(16, 185, 129, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
+            }
+        }
+
+        .system-status-text {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #10b981;
+        }
+
+        .disk-usage-bar {
+            width: 100%;
+            height: 6px;
+            background: #e5e7eb;
+            border-radius: 3px;
+            overflow: hidden;
+            margin-top: 5px;
+        }
+
+        .disk-usage-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #10b981 0%, #059669 50%, #f59e0b 80%, #ef4444 100%);
+            border-radius: 3px;
+            transition: width 0.5s ease;
+        }
+
+        .status-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            padding: 30px;
+            background: white;
+        }
+
+        .status-card {
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9ff 100%);
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .status-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--card-color);
+        }
+
+        .status-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
+        }
+
+        .status-card.success {
+            --card-color: #10b981;
+        }
+
+        .status-card.info {
+            --card-color: #3b82f6;
+        }
+
+        .status-card.warning {
+            --card-color: #f59e0b;
+        }
+
+        .status-card.error {
+            --card-color: #ef4444;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .status-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: white;
+            margin-bottom: 15px;
+        }
+
+        .success .status-icon { background: #10b981; }
+        .info .status-icon { background: #3b82f6; }
+        .warning .status-icon { background: #f59e0b; }
+        .error .status-icon { background: #ef4444; }
+
+        .status-title {
+            font-size: 0.9rem;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+        }
+
+        .status-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #1f2937;
+            margin: 8px 0;
+        }
+
+        .status-label {
+            font-size: 1.1rem;
+            color: var(--card-color);
+            font-weight: 500;
+        }
+
+        .last-updated {
+            font-size: 0.85rem;
+            color: #9ca3af;
+            margin-top: 10px;
+        }
+
+        .charts-section {
+            padding: 30px;
+            background: #f9fafb;
+        }
+
+        .charts-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .chart-container {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        .chart-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .bar-chart {
+            display: flex;
+            align-items: end;
+            height: 200px;
+            gap: 15px;
+            padding: 20px 0;
+        }
+
+        .bar {
+            flex: 1;
+            background: var(--bar-color);
+            border-radius: 8px 8px 0 0;
+            position: relative;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .bar:hover {
+            opacity: 0.8;
+            transform: scale(1.05);
+        }
+
+        .bar-label {
+            position: absolute;
+            bottom: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.8rem;
+            color: #6b7280;
+            font-weight: 500;
+        }
+
+        .bar-value {
+            position: absolute;
+            top: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.9rem;
+            color: #1f2937;
+            font-weight: 600;
+        }
+
+        .pie-chart {
+            width: 200px;
+            height: 200px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .traces-section {
+            background: white;
+            padding: 30px;
+        }
+
+        .traces-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .traces-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #1f2937;
+        }
+
+        .export-btn {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        .export-btn:hover {
+            background: #2563eb;
+            transform: translateY(-1px);
+        }
+
+        .traces-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .traces-table th,
+        .traces-table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .traces-table th {
+            background: #f9fafb;
+            font-weight: 600;
+            color: #374151;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .traces-table tr:hover {
+            background: #f9fafb;
+        }
+
+        .status-badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            text-transform: uppercase;
+        }
+
+        .status-200 {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .status-404 {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .status-500 {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .view-btn {
+            background: #6366f1;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.2s ease;
+        }
+
+        .view-btn:hover {
+            background: #4f46e5;
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.7; }
+            100% { opacity: 1; }
+        }
+
+        @media (max-width: 768px) {
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .status-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .refresh-btn {
+                position: static;
+                margin-top: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="dashboard-container">
+    <div class="header">
+        <h1>Spring Boot Health Dashboard</h1>
+        <p>Real-time monitoring of application health and performance metrics</p>
+        <button class="refresh-btn" onclick="refreshData()">🔄 Refresh Data</button>
+    </div>
+
+    <!-- System Status Section -->
+    <div class="system-status">
+        <div class="system-info-grid">
+            <div class="system-info-card">
+                <div class="system-icon">🗄️</div>
+                <div class="system-details">
+                    <div class="system-title">Database</div>
+                    <div class="system-value" id="db-type">MySQL 8.0</div>
+                    <div class="system-status-indicator">
+                        <span class="status-dot status-up" id="db-status-dot"></span>
+                        <span class="system-status-text" id="db-status">UP</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="system-info-card">
+                <div class="system-icon">💾</div>
+                <div class="system-details">
+                    <div class="system-title">Disk Space</div>
+                    <div class="system-value" id="disk-space">8.4 GB</div>
+                    <div class="disk-usage-bar">
+                        <div class="disk-usage-fill" id="disk-usage-fill" style="width: 65%"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="system-info-card">
+                <div class="system-icon">⚙️</div>
+                <div class="system-details">
+                    <div class="system-title">Processors</div>
+                    <div class="system-value" id="processor-count">4 Cores</div>
+                    <div class="system-subtitle">Intel i7-9750H</div>
+                </div>
+            </div>
+
+            <div class="system-info-card">
+                <div class="system-icon">⏰</div>
+                <div class="system-details">
+                    <div class="system-title">Uptime</div>
+                    <div class="system-value" id="uptime">00:46:01h</div>
+                    <div class="system-subtitle">Started today</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="status-grid">
+        <div class="status-card success">
+            <div class="status-icon">✅</div>
+            <div class="status-title">200 Response</div>
+            <div class="status-value" id="success-count">29</div>
+            <div class="status-label">Successful</div>
+            <div class="last-updated">Updated: 7/28/20, 11:05 PM</div>
+        </div>
+
+        <div class="status-card info">
+            <div class="status-icon">ℹ️</div>
+            <div class="status-title">404 Response</div>
+            <div class="status-value" id="not-found-count">6</div>
+            <div class="status-label">Not Found</div>
+            <div class="last-updated">Updated: 7/28/20, 11:06 PM</div>
+        </div>
+
+        <div class="status-card warning">
+            <div class="status-icon">⚠️</div>
+            <div class="status-title">400 Response</div>
+            <div class="status-value" id="bad-request-count">3</div>
+            <div class="status-label">Bad Request</div>
+            <div class="last-updated">Updated: 7/28/20, 11:07 PM</div>
+        </div>
+
+        <div class="status-card error">
+            <div class="status-icon">❌</div>
+            <div class="status-title">500 Response</div>
+            <div class="status-value" id="error-count">8</div>
+            <div class="status-label">Server Error</div>
+            <div class="last-updated">Updated: 7/28/20, 11:08 PM</div>
+        </div>
+    </div>
+
+    <div class="charts-section">
+        <div class="charts-grid">
+            <div class="chart-container">
+                <div class="chart-title">HTTP Response Distribution</div>
+                <div class="bar-chart">
+                    <div class="bar" style="height: 85%; --bar-color: #10b981;">
+                        <div class="bar-value">29</div>
+                        <div class="bar-label">200</div>
+                    </div>
+                    <div class="bar" style="height: 35%; --bar-color: #3b82f6;">
+                        <div class="bar-value">6</div>
+                        <div class="bar-label">404</div>
+                    </div>
+                    <div class="bar" style="height: 25%; --bar-color: #f59e0b;">
+                        <div class="bar-value">3</div>
+                        <div class="bar-label">400</div>
+                    </div>
+                    <div class="bar" style="height: 45%; --bar-color: #ef4444;">
+                        <div class="bar-value">8</div>
+                        <div class="bar-label">500</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="chart-container">
+                <div class="chart-title">Response Time Distribution</div>
+                <div class="pie-chart">
+                    <svg width="200" height="200" viewBox="0 0 200 200">
+                        <circle cx="100" cy="100" r="80" fill="#10b981" stroke="white" stroke-width="3"
+                                stroke-dasharray="188 377" stroke-dashoffset="0" transform="rotate(-90 100 100)"/>
+                        <circle cx="100" cy="100" r="80" fill="#3b82f6" stroke="white" stroke-width="3"
+                                stroke-dasharray="47 377" stroke-dashoffset="-188" transform="rotate(-90 100 100)"/>
+                        <circle cx="100" cy="100" r="80" fill="#f59e0b" stroke="white" stroke-width="3"
+                                stroke-dasharray="28 377" stroke-dashoffset="-235" transform="rotate(-90 100 100)"/>
+                        <circle cx="100" cy="100" r="80" fill="#ef4444" stroke="white" stroke-width="3"
+                                stroke-dasharray="114 377" stroke-dashoffset="-263" transform="rotate(-90 100 100)"/>
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="traces-section">
+        <div class="traces-header">
+            <h2 class="traces-title">HTTP Traces</h2>
+            <button class="export-btn" onclick="exportToExcel()">📊 Export to Excel</button>
+        </div>
+
+        <table class="traces-table">
+            <thead>
+            <tr>
+                <th>Time Stamp</th>
+                <th>Method</th>
+                <th>Time Taken (ms)</th>
+                <th>Status</th>
+                <th>URI</th>
+                <th>Action</th>
+            </tr>
+            </thead>
+            <tbody id="traces-tbody">
+            <tr>
+                <td>Jul 28, 2020, 11:08:06 PM</td>
+                <td><strong>GET</strong></td>
+                <td>45</td>
+                <td><span class="status-badge status-200">200</span></td>
+                <td>http://localhost:5000/employees/find/4555</td>
+                <td><button class="view-btn" onclick="viewTrace(1)">👁️ View</button></td>
+            </tr>
+            <tr>
+                <td>Jul 28, 2020, 11:08:05 PM</td>
+                <td><strong>GET</strong></td>
+                <td>39</td>
+                <td><span class="status-badge status-200">200</span></td>
+                <td>http://localhost:5000/employees/find/4555</td>
+                <td><button class="view-btn" onclick="viewTrace(2)">👁️ View</button></td>
+            </tr>
+            <tr>
+                <td>Jul 28, 2020, 11:08:04 PM</td>
+                <td><strong>POST</strong></td>
+                <td>120</td>
+                <td><span class="status-badge status-404">404</span></td>
+                <td>http://localhost:5000/employees/create</td>
+                <td><button class="view-btn" onclick="viewTrace(3)">👁️ View</button></td>
+            </tr>
+            <tr>
+                <td>Jul 28, 2020, 11:08:03 PM</td>
+                <td><strong>PUT</strong></td>
+                <td>85</td>
+                <td><span class="status-badge status-500">500</span></td>
+                <td>http://localhost:5000/employees/update/1234</td>
+                <td><button class="view-btn" onclick="viewTrace(4)">👁️ View</button></td>
+            </tr>
+            <tr>
+                <td>Jul 28, 2020, 11:08:02 PM</td>
+                <td><strong>DELETE</strong></td>
+                <td>32</td>
+                <td><span class="status-badge status-200">200</span></td>
+                <td>http://localhost:5000/employees/delete/9876</td>
+                <td><button class="view-btn" onclick="viewTrace(5)">👁️ View</button></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    // Configuration
+    const API_BASE_URL = 'http://localhost:8080/api/dashboard';
+
+    // Real-time data updates from Spring Boot backend
+    async function refreshData() {
+        const button = document.querySelector('.refresh-btn');
+        button.classList.add('pulse');
+
+        try {
+            // Fetch all data from Spring Boot endpoints
+            const [systemStatus, httpStats, traces] = await Promise.all([
+                fetch(`${API_BASE_URL}/system-status`).then(r => r.json()),
+                fetch(`${API_BASE_URL}/http-responses`).then(r => r.json()),
+                fetch(`${API_BASE_URL}/traces`).then(r => r.json())
+            ]);
+
+            // Update system status
+            updateSystemStatusFromAPI(systemStatus);
+
+            // Update HTTP response counters
+            updateCounter('success-count', httpStats.successCount);
+            updateCounter('not-found-count', httpStats.notFoundCount);
+            updateCounter('bad-request-count', httpStats.badRequestCount);
+            updateCounter('error-count', httpStats.serverErrorCount);
+
+            // Update HTTP traces table
+            updateTracesTable(traces);
+
+            // Update timestamps
+            const now = new Date();
+            const timeString = now.toLocaleString();
+            document.querySelectorAll('.last-updated').forEach(el => {
+                el.textContent = `Updated: ${timeString}`;
+            });
+
+            button.classList.remove('pulse');
+            showNotification('Data refreshed successfully!', 'success');
+
+        } catch (error) {
+            console.error('Error fetching data:', error);
+            button.classList.remove('pulse');
+            showNotification('Failed to refresh data. Using fallback data.', 'error');
+
+            // Fallback to simulated data if API is unavailable
+            fallbackDataUpdate();
+        }
+    }
+
+    function updateSystemStatusFromAPI(systemStatus) {
+        // Update database status
+        const dbType = `${systemStatus.database.type} ${systemStatus.database.version}`;
+        document.getElementById('db-type').textContent = dbType;
+
+        const dbStatusElement = document.getElementById('db-status');
+        const dbStatusDot = document.getElementById('db-status-dot');
+        const dbStatus = systemStatus.database.status;
+
+        dbStatusElement.textContent = dbStatus;
+        if (dbStatus === 'UP') {
+            dbStatusElement.style.color = '#10b981';
+            dbStatusDot.className = 'status-dot status-up';
+        } else {
+            dbStatusElement.style.color = '#ef4444';
+            dbStatusDot.className = 'status-dot status-down';
+        }
+
+        // Update disk space
+        const diskSpace = systemStatus.diskSpace.freeSpace.toFixed(1);
+        const diskUsage = systemStatus.diskSpace.usagePercentage;
+        document.getElementById('disk-space').textContent = `${diskSpace} GB`;
+        document.getElementById('disk-usage-fill').style.width = `${diskUsage}%`;
+
+        // Update processor info
+        const processorCount = `${systemStatus.processor.coreCount} Cores`;
+        document.getElementById('processor-count').textContent = processorCount;
+        document.getElementById('processor-count').nextElementSibling.textContent = systemStatus.processor.processorName;
+
+        // Update uptime
+        document.getElementById('uptime').textContent = systemStatus.uptime;
+    }
+
+    function updateTracesTable(traces) {
+        const tbody = document.getElementById('traces-tbody');
+        tbody.innerHTML = ''; // Clear existing traces
+
+        traces.forEach((trace, index) => {
+            const row = document.createElement('tr');
+            const statusClass = getStatusClass(trace.status);
+
+            row.innerHTML = `
+                    <td>${new Date(trace.timestamp).toLocaleString()}</td>
+                    <td><strong>${trace.method}</strong></td>
+                    <td>${trace.timeTaken}</td>
+                    <td><span class="status-badge ${statusClass}">${trace.status}</span></td>
+                    <td>${trace.uri}</td>
+                    <td><button class="view-btn" onclick="viewTrace(${index})">👁️ View</button></td>
+                `;
+
+            tbody.appendChild(row);
+        });
+    }
+
+    function getStatusClass(status) {
+        if (status >= 200 && status < 300) return 'status-200';
+        if (status === 404) return 'status-404';
+        if (status >= 400 && status < 500) return 'status-400';
+        if (status >= 500) return 'status-500';
+        return 'status-200';
+    }
+
+    // Fallback function for when API is not available
+    function fallbackDataUpdate() {
+        // Update HTTP response counters with random values
+        updateCounter('success-count', Math.floor(Math.random() * 50) + 20);
+        updateCounter('not-found-count', Math.floor(Math.random() * 15) + 3);
+        updateCounter('bad-request-count', Math.floor(Math.random() * 10) + 1);
+        updateCounter('error-count', Math.floor(Math.random() * 20) + 5);
+
+        // Update system status with simulated data
+        updateSystemStatusFallback();
+
+        // Add new trace entry
+        addNewTrace();
+    }
+
+    function updateSystemStatusFallback() {
+        // Fallback system status update (same as before)
+        const dbStatus = Math.random() > 0.1 ? 'UP' : 'DOWN';
+        const dbStatusElement = document.getElementById('db-status');
+        const dbStatusDot = document.getElementById('db-status-dot');
+
+        dbStatusElement.textContent = dbStatus;
+        if (dbStatus === 'UP') {
+            dbStatusElement.style.color = '#10b981';
+            dbStatusDot.className = 'status-dot status-up';
+        } else {
+            dbStatusElement.style.color = '#ef4444';
+            dbStatusDot.className = 'status-dot status-down';
+        }
+
+        // Update disk space
+        const diskSpaceGB = (Math.random() * 5 + 6).toFixed(1);
+        const diskUsage = Math.floor(Math.random() * 40 + 50); // 50-90%
+        document.getElementById('disk-space').textContent = `${diskSpaceGB} GB`;
+        document.getElementById('disk-usage-fill').style.width = `${diskUsage}%`;
+
+        // Update processor info (occasionally change)
+        const processors = [
+            { count: '4 Cores', type: 'Intel i7-9750H' },
+            { count: '8 Cores', type: 'AMD Ryzen 7' },
+            { count: '6 Cores', type: 'Intel i5-10400' },
+            { count: '4 Cores', type: 'Intel i7-8700K' }
+        ];
+
+        if (Math.random() > 0.7) { // 30% chance to change
+            const randomProcessor = processors[Math.floor(Math.random() * processors.length)];
+            document.getElementById('processor-count').textContent = randomProcessor.count;
+            document.querySelector('#processor-count').nextElementSibling.textContent = randomProcessor.type;
+        }
+    }
+
+    // Health check function to test Spring Boot connection
+    async function checkApiHealth() {
+        try {
+            const response = await fetch(`${API_BASE_URL}/health-summary`);
+            if (response.ok) {
+                showNotification('Connected to Spring Boot API', 'success');
+                return true;
+            } else {
+                showNotification('Spring Boot API responding with errors', 'warning');
+                return false;
+            }
+        } catch (error) {
+            showNotification('Cannot connect to Spring Boot API - using fallback data', 'warning');
+            return false;
+        }
+    }
+
+    function updateCounter(id, value) {
+        const element = document.getElementById(id);
+        const current = parseInt(element.textContent);
+        animateNumber(element, current, value, 500);
+    getElementById('uptime').textContent = formattedUptime;
+    }
+
+    function updateCounter(id, value) {
+        const element = document.getElementById(id);
+        const current = parseInt(element.textContent);
+        animateNumber(element, current, value, 500);
+    }
+
+    function animateNumber(element, start, end, duration) {
+        const range = end - start;
+        const increment = range / (duration / 16);
+        let current = start;
+
+        const timer = setInterval(() => {
+            current += increment;
+            if ((increment > 0 && current >= end) || (increment < 0 && current <= end)) {
+                current = end;
+                clearInterval(timer);
+            }
+            element.textContent = Math.round(current);
+        }, 16);
+    }
+
+    function addNewTrace() {
+        const tbody = document.getElementById('traces-tbody');
+        const methods = ['GET', 'POST', 'PUT', 'DELETE'];
+        const statuses = [200, 404, 400, 500];
+        const statusClasses = ['status-200', 'status-404', 'status-400', 'status-500'];
+        const endpoints = [
+            '/employees/find/' + Math.floor(Math.random() * 9999),
+            '/employees/create',
+            '/employees/update/' + Math.floor(Math.random() * 9999),
+            '/employees/delete/' + Math.floor(Math.random() * 9999)
+        ];
+
+        const method = methods[Math.floor(Math.random() * methods.length)];
+        const statusIndex = Math.floor(Math.random() * statuses.length);
+        const status = statuses[statusIndex];
+        const statusClass = statusClasses[statusIndex];
+        const endpoint = endpoints[Math.floor(Math.random() * endpoints.length)];
+        const responseTime = Math.floor(Math.random() * 200) + 20;
+
+        const newRow = document.createElement('tr');
+        newRow.innerHTML = `
+                <td>${new Date().toLocaleString()}</td>
+                <td><strong>${method}</strong></td>
+                <td>${responseTime}</td>
+                <td><span class="status-badge ${statusClass}">${status}</span></td>
+                <td>http://localhost:5000${endpoint}</td>
+                <td><button class="view-btn" onclick="viewTrace(${Date.now()})">👁️ View</button></td>
+            `;
+
+        // Add animation
+        newRow.style.opacity = '0';
+        newRow.style.transform = 'translateY(-10px)';
+        tbody.insertBefore(newRow, tbody.firstChild);
+
+        // Animate in
+        setTimeout(() => {
+            newRow.style.transition = 'all 0.3s ease';
+            newRow.style.opacity = '1';
+            newRow.style.transform = 'translateY(0)';
+        }, 100);
+
+        // Remove oldest row if more than 10
+        if (tbody.children.length > 10) {
+            tbody.removeChild(tbody.lastChild);
+        }
+    }
+
+    function viewTrace(id) {
+        showNotification(`Viewing trace #${id}`, 'info');
+    }
+
+    function exportToExcel() {
+        showNotification('Exporting data to Excel...', 'info');
+        // In a real application, this would trigger an actual export
+        setTimeout(() => {
+            showNotification('Export completed successfully!', 'success');
+        }, 2000);
+    }
+
+    function showNotification(message, type) {
+        const notification = document.createElement('div');
+        notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 15px 25px;
+                border-radius: 8px;
+                color: white;
+                font-weight: 500;
+                z-index: 1000;
+                transition: all 0.3s ease;
+                transform: translateX(400px);
+            `;
+
+        switch(type) {
+            case 'success':
+                notification.style.background = '#10b981';
+                break;
+            case 'info':
+                notification.style.background = '#3b82f6';
+                break;
+            case 'warning':
+                notification.style.background = '#f59e0b';
+                break;
+            case 'error':
+                notification.style.background = '#ef4444';
+                break;
+        }
+
+        notification.textContent = message;
+        document.body.appendChild(notification);
+
+        // Animate in
+        setTimeout(() => {
+            notification.style.transform = 'translateX(0)';
+        }, 100);
+
+        // Remove after 3 seconds
+        setTimeout(() => {
+            notification.style.transform = 'translateX(400px)';
+            setTimeout(() => {
+                document.body.removeChild(notification);
+            }, 300);
+        }, 3000);
+    }
+
+    // Auto-refresh every 30 seconds
+    setInterval(() => {
+        refreshData(); // Always try to refresh from API
+    }, 30000);
+
+    // Add loading state and initial API connection test
+    window.addEventListener('load', async () => {
+        // Test API connection on load
+        const apiConnected = await checkApiHealth();
+
+        if (apiConnected) {
+            // Load initial data from API
+            await refreshData();
+        } else {
+            // Use fallback data if API is not available
+            fallbackDataUpdate();
+        }
+
+        setTimeout(() => {
+            showNotification('Dashboard loaded successfully!', 'success');
+        }, 1000);
+    });
+
+    // Export function for Excel
+    async function exportToExcel() {
+        try {
+            showNotification('Exporting data to Excel...', 'info');
+
+            // In a real implementation, you might want to call a Spring Boot endpoint
+            // that generates and returns an Excel file
+            const response = await fetch(`${API_BASE_URL}/export/excel`, {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+                }
+            });
+
+            if (response.ok) {
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `health-dashboard-${new Date().toISOString().slice(0,10)}.xlsx`;
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+                document.body.removeChild(a);
+                showNotification('Export completed successfully!', 'success');
+            } else {
+                throw new Error('Export failed');
+            }
+        } catch (error) {
+            console.error('Export error:', error);
+            showNotification('Export feature not available - check Spring Boot connection', 'warning');
+        }
+    }
+</script>
+</body>
+</html>
