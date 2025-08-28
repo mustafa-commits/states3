@@ -271,107 +271,107 @@ public class ViewTrackingService {
 
     // Private helper methods for duplicate detection
 
-    private boolean isDuplicateCompoundView(Users user, Compound compound, String sessionId, String ipAddress) {
-        if (user != null) {
-            // Check by user
-            Optional<UserActions> lastAction = userActionsRepository
-                    .findTopByUserAndCompoundAndActionTypeOrderByActionTimeDesc(user, compound, ActionType.VIEW);
+//    private boolean isDuplicateCompoundView(Users user, Compound compound, String sessionId, String ipAddress) {
+//        if (user != null) {
+//            // Check by user
+//            Optional<UserActions> lastAction = userActionsRepository
+//                    .findTopByUserAndCompoundAndActionTypeOrderByActionTimeDesc(user, compound, ActionType.VIEW);
+//
+//            if (lastAction.isPresent()) {
+//                LocalDateTime lastViewTime = lastAction.get().getActionTime();
+//                LocalDateTime cutoff = LocalDateTime.now().minusMinutes(DUPLICATE_PREVENTION_WINDOW_MINUTES);
+//                return lastViewTime.isAfter(cutoff);
+//            }
+//        }
+//
+//        // Check by session ID for anonymous users
+//        if (sessionId != null) {
+//            Optional<UserActions> lastAction = userActionsRepository
+//                    .findTopBySessionIdAndCompoundAndActionTypeOrderByActionTimeDesc(sessionId, compound, ActionType.VIEW);
+//
+//            if (lastAction.isPresent()) {
+//                LocalDateTime lastViewTime = lastAction.get().getActionTime();
+//                LocalDateTime cutoff = LocalDateTime.now().minusMinutes(DUPLICATE_PREVENTION_WINDOW_MINUTES);
+//                return lastViewTime.isAfter(cutoff);
+//            }
+//        }
+//
+//        return false;
+//    }
 
-            if (lastAction.isPresent()) {
-                LocalDateTime lastViewTime = lastAction.get().getActionTime();
-                LocalDateTime cutoff = LocalDateTime.now().minusMinutes(DUPLICATE_PREVENTION_WINDOW_MINUTES);
-                return lastViewTime.isAfter(cutoff);
-            }
-        }
+//    private boolean isDuplicateStateView(Users user, States state, String sessionId, String ipAddress) {
+//        if (user != null) {
+//            // Check by user
+//            Optional<UserActions> lastAction = userActionsRepository
+//                    .findTopByUserAndStateAndActionTypeOrderByActionTimeDesc(user, state, ActionType.VIEW);
+//
+//            if (lastAction.isPresent()) {
+//                LocalDateTime lastViewTime = lastAction.get().getActionTime();
+//                LocalDateTime cutoff = LocalDateTime.now().minusMinutes(DUPLICATE_PREVENTION_WINDOW_MINUTES);
+//                return lastViewTime.isAfter(cutoff);
+//            }
+//        }
+//
+//        // Check by session ID for anonymous users
+//        if (sessionId != null) {
+//            Optional<UserActions> lastAction = userActionsRepository
+//                    .findTopBySessionIdAndStateAndActionTypeOrderByActionTimeDesc(sessionId, state, ActionType.VIEW);
+//
+//            if (lastAction.isPresent()) {
+//                LocalDateTime lastViewTime = lastAction.get().getActionTime();
+//                LocalDateTime cutoff = LocalDateTime.now().minusMinutes(DUPLICATE_PREVENTION_WINDOW_MINUTES);
+//                return lastViewTime.isAfter(cutoff);
+//            }
+//        }
+//
+//        return false;
+//    }
 
-        // Check by session ID for anonymous users
-        if (sessionId != null) {
-            Optional<UserActions> lastAction = userActionsRepository
-                    .findTopBySessionIdAndCompoundAndActionTypeOrderByActionTimeDesc(sessionId, compound, ActionType.VIEW);
+//    private boolean isDuplicateCompoundViewAnonymous(Compound compound, String sessionId, String ipAddress) {
+//        if (sessionId != null) {
+//            Optional<UserActions> lastAction = userActionsRepository
+//                    .findTopBySessionIdAndCompoundAndActionTypeOrderByActionTimeDesc(sessionId, compound, ActionType.VIEW);
+//
+//            if (lastAction.isPresent()) {
+//                LocalDateTime lastViewTime = lastAction.get().getActionTime();
+//                LocalDateTime cutoff = LocalDateTime.now().minusMinutes(DUPLICATE_PREVENTION_WINDOW_MINUTES);
+//                return lastViewTime.isAfter(cutoff);
+//            }
+//        }
+//
+//        // Additional IP-based check for anonymous users
+//        if (ipAddress != null) {
+//            LocalDateTime cutoff = LocalDateTime.now().minusMinutes(DUPLICATE_PREVENTION_WINDOW_MINUTES);
+//            var recentActions = userActionsRepository
+//                    .findRecentActionsByIpAndCompound(ipAddress, compound, ActionType.VIEW, cutoff);
+//            return !recentActions.isEmpty();
+//        }
+//
+//        return false;
+//    }
 
-            if (lastAction.isPresent()) {
-                LocalDateTime lastViewTime = lastAction.get().getActionTime();
-                LocalDateTime cutoff = LocalDateTime.now().minusMinutes(DUPLICATE_PREVENTION_WINDOW_MINUTES);
-                return lastViewTime.isAfter(cutoff);
-            }
-        }
-
-        return false;
-    }
-
-    private boolean isDuplicateStateView(Users user, States state, String sessionId, String ipAddress) {
-        if (user != null) {
-            // Check by user
-            Optional<UserActions> lastAction = userActionsRepository
-                    .findTopByUserAndStateAndActionTypeOrderByActionTimeDesc(user, state, ActionType.VIEW);
-
-            if (lastAction.isPresent()) {
-                LocalDateTime lastViewTime = lastAction.get().getActionTime();
-                LocalDateTime cutoff = LocalDateTime.now().minusMinutes(DUPLICATE_PREVENTION_WINDOW_MINUTES);
-                return lastViewTime.isAfter(cutoff);
-            }
-        }
-
-        // Check by session ID for anonymous users
-        if (sessionId != null) {
-            Optional<UserActions> lastAction = userActionsRepository
-                    .findTopBySessionIdAndStateAndActionTypeOrderByActionTimeDesc(sessionId, state, ActionType.VIEW);
-
-            if (lastAction.isPresent()) {
-                LocalDateTime lastViewTime = lastAction.get().getActionTime();
-                LocalDateTime cutoff = LocalDateTime.now().minusMinutes(DUPLICATE_PREVENTION_WINDOW_MINUTES);
-                return lastViewTime.isAfter(cutoff);
-            }
-        }
-
-        return false;
-    }
-
-    private boolean isDuplicateCompoundViewAnonymous(Compound compound, String sessionId, String ipAddress) {
-        if (sessionId != null) {
-            Optional<UserActions> lastAction = userActionsRepository
-                    .findTopBySessionIdAndCompoundAndActionTypeOrderByActionTimeDesc(sessionId, compound, ActionType.VIEW);
-
-            if (lastAction.isPresent()) {
-                LocalDateTime lastViewTime = lastAction.get().getActionTime();
-                LocalDateTime cutoff = LocalDateTime.now().minusMinutes(DUPLICATE_PREVENTION_WINDOW_MINUTES);
-                return lastViewTime.isAfter(cutoff);
-            }
-        }
-
-        // Additional IP-based check for anonymous users
-        if (ipAddress != null) {
-            LocalDateTime cutoff = LocalDateTime.now().minusMinutes(DUPLICATE_PREVENTION_WINDOW_MINUTES);
-            var recentActions = userActionsRepository
-                    .findRecentActionsByIpAndCompound(ipAddress, compound, ActionType.VIEW, cutoff);
-            return !recentActions.isEmpty();
-        }
-
-        return false;
-    }
-
-    private boolean isDuplicateStateViewAnonymous(States state, String sessionId, String ipAddress) {
-        if (sessionId != null) {
-            Optional<UserActions> lastAction = userActionsRepository
-                    .findTopBySessionIdAndStateAndActionTypeOrderByActionTimeDesc(sessionId, state, ActionType.VIEW);
-
-            if (lastAction.isPresent()) {
-                LocalDateTime lastViewTime = lastAction.get().getActionTime();
-                LocalDateTime cutoff = LocalDateTime.now().minusMinutes(DUPLICATE_PREVENTION_WINDOW_MINUTES);
-                return lastViewTime.isAfter(cutoff);
-            }
-        }
-
-        // Additional IP-based check for anonymous users
-        if (ipAddress != null) {
-            LocalDateTime cutoff = LocalDateTime.now().minusMinutes(DUPLICATE_PREVENTION_WINDOW_MINUTES);
-            var recentActions = userActionsRepository
-                    .findRecentActionsByIpAndState(ipAddress, state, ActionType.VIEW, cutoff);
-            return !recentActions.isEmpty();
-        }
-
-        return false;
-    }
+//    private boolean isDuplicateStateViewAnonymous(States state, String sessionId, String ipAddress) {
+//        if (sessionId != null) {
+//            Optional<UserActions> lastAction = userActionsRepository
+//                    .findTopBySessionIdAndStateAndActionTypeOrderByActionTimeDesc(sessionId, state, ActionType.VIEW);
+//
+//            if (lastAction.isPresent()) {
+//                LocalDateTime lastViewTime = lastAction.get().getActionTime();
+//                LocalDateTime cutoff = LocalDateTime.now().minusMinutes(DUPLICATE_PREVENTION_WINDOW_MINUTES);
+//                return lastViewTime.isAfter(cutoff);
+//            }
+//        }
+//
+//        // Additional IP-based check for anonymous users
+//        if (ipAddress != null) {
+//            LocalDateTime cutoff = LocalDateTime.now().minusMinutes(DUPLICATE_PREVENTION_WINDOW_MINUTES);
+//            var recentActions = userActionsRepository
+//                    .findRecentActionsByIpAndState(ipAddress, state, ActionType.VIEW, cutoff);
+//            return !recentActions.isEmpty();
+//        }
+//
+//        return false;
+//    }
 
     /**
      * Get analytics data for a compound

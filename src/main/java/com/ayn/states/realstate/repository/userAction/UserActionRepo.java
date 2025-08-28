@@ -23,18 +23,18 @@ public interface UserActionRepo extends JpaRepository<UserActions, Long> {
 //    long countByCompoundAndActionType(Compound compound, ActionType actionType);
 
     // Find recent actions by user to prevent duplicate views
-    Optional<UserActions> findTopByUserAndStateAndActionTypeOrderByActionTimeDesc(
-            Users user, States state, ActionType actionType);
-
-    Optional<UserActions> findTopByUserAndCompoundAndActionTypeOrderByActionTimeDesc(
-            Users user, Compound compound, ActionType actionType);
-
-    // Find actions by session for unregistered users
-    Optional<UserActions> findTopBySessionIdAndStateAndActionTypeOrderByActionTimeDesc(
-            String sessionId, States state, ActionType actionType);
-
-    Optional<UserActions> findTopBySessionIdAndCompoundAndActionTypeOrderByActionTimeDesc(
-            String sessionId, Compound compound, ActionType actionType);
+//    Optional<UserActions> findTopByUserAndStateAndActionTypeOrderByActionTimeDesc(
+//            Users user, States state, ActionType actionType);
+//
+//    Optional<UserActions> findTopByUserAndCompoundAndActionTypeOrderByActionTimeDesc(
+//            Users user, Compound compound, ActionType actionType);
+//
+//    // Find actions by session for unregistered users
+//    Optional<UserActions> findTopBySessionIdAndStateAndActionTypeOrderByActionTimeDesc(
+//            String sessionId, States state, ActionType actionType);
+//
+//    Optional<UserActions> findTopBySessionIdAndCompoundAndActionTypeOrderByActionTimeDesc(
+//            String sessionId, Compound compound, ActionType actionType);
 
     // Analytics queries
     @Query("SELECT COUNT(DISTINCT COALESCE(ua.user.id, ua.unregisteredUser.tempIdentifier)) " +
@@ -102,35 +102,35 @@ public interface UserActionRepo extends JpaRepository<UserActions, Long> {
     List<Object[]> getActionTypeCounts(@Param("since") LocalDateTime since);
 
     // IP-based duplicate detection
-    @Query("SELECT ua FROM UserActions ua WHERE ua.ipAddress = :ipAddress " +
-            "AND ua.state = :state AND ua.actionType = :actionType " +
-            "AND ua.actionTime >= :since ORDER BY ua.actionTime DESC")
-    List<UserActions> findRecentActionsByIpAndState(@Param("ipAddress") String ipAddress,
-                                                    @Param("state") States state,
-                                                    @Param("actionType") ActionType actionType,
-                                                    @Param("since") LocalDateTime since);
-
-    @Query("SELECT ua FROM UserActions ua WHERE ua.ipAddress = :ipAddress " +
-            "AND ua.compound = :compound AND ua.actionType = :actionType " +
-            "AND ua.actionTime >= :since ORDER BY ua.actionTime DESC")
-    List<UserActions> findRecentActionsByIpAndCompound(@Param("ipAddress") String ipAddress,
-                                                       @Param("compound") Compound compound,
-                                                       @Param("actionType") ActionType actionType,
-                                                       @Param("since") LocalDateTime since);
-
-    // Cleanup old records (for maintenance)
-    void deleteByActionTimeBefore(LocalDateTime cutoffDate);
+//    @Query("SELECT ua FROM UserActions ua WHERE ua.ipAddress = :ipAddress " +
+//            "AND ua.state = :state AND ua.actionType = :actionType " +
+//            "AND ua.actionTime >= :since ORDER BY ua.actionTime DESC")
+//    List<UserActions> findRecentActionsByIpAndState(@Param("ipAddress") String ipAddress,
+//                                                    @Param("state") States state,
+//                                                    @Param("actionType") ActionType actionType,
+//                                                    @Param("since") LocalDateTime since);
+//
+//    @Query("SELECT ua FROM UserActions ua WHERE ua.ipAddress = :ipAddress " +
+//            "AND ua.compound = :compound AND ua.actionType = :actionType " +
+//            "AND ua.actionTime >= :since ORDER BY ua.actionTime DESC")
+//    List<UserActions> findRecentActionsByIpAndCompound(@Param("ipAddress") String ipAddress,
+//                                                       @Param("compound") Compound compound,
+//                                                       @Param("actionType") ActionType actionType,
+//                                                       @Param("since") LocalDateTime since);
+//
+//    // Cleanup old records (for maintenance)
+//    void deleteByActionTimeBefore(LocalDateTime cutoffDate);
 
     // Custom query for complex analytics
-    @Query(value = "SELECT " +
-            "entity_type, " +
-            "entity_id, " +
-            "total_views, " +
-            "unique_viewers, " +
-            "last_viewed_at, " +
-            "views_last_30_days " +
-            "FROM view_analytics " +
-            "ORDER BY total_views DESC " +
-            "LIMIT :limit", nativeQuery = true)
-    List<Object[]> getTopViewedEntities(@Param("limit") int limit);
+//    @Query(value = "SELECT " +
+//            "entity_type, " +
+//            "entity_id, " +
+//            "total_views, " +
+//            "unique_viewers, " +
+//            "last_viewed_at, " +
+//            "views_last_30_days " +
+//            "FROM view_analytics " +
+//            "ORDER BY total_views DESC " +
+//            "LIMIT :limit", nativeQuery = true)
+//    List<Object[]> getTopViewedEntities(@Param("limit") int limit);
 }
