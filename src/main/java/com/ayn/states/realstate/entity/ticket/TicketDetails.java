@@ -19,7 +19,6 @@ import java.util.TimeZone;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 @Table(name = "ST_APP_TicketDetails")
 public class TicketDetails {
     @Id
