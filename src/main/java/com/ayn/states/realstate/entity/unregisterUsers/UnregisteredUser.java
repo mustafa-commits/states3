@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "unregistered_user")
 @NoArgsConstructor
+@AllArgsConstructor
 @Getter
 @Setter
 public class UnregisteredUser {

@@ -3,7 +3,9 @@ package com.ayn.states.realstate.entity.propertyRequest;
 import com.ayn.states.realstate.enums.Category;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
@@ -12,6 +14,8 @@ import java.time.LocalDateTime;
 @Table(name = "property_requests")
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class PropertyRequest {
 
     @Id
