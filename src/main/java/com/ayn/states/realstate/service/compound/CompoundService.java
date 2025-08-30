@@ -531,7 +531,7 @@ public class CompoundService implements CommandLineRunner {
 
     public List<AllCompound> compoundsByGovernate(int governate) {
         return jdbcClient.sql("""
-          SELECT c.id, c.address, c.views_count AS viewsCount, CONCAT(:url,c.cover_image_url) AS coverImage, CONCAT(:url,c.thumbnail_url) AS thumbnailUrl
+          SELECT c.id as compoundId, c.address, c.views_count AS viewsCount, CONCAT(:url,c.cover_image_url) AS coverImage, CONCAT(:url,c.thumbnail_url) AS thumbnailUrl
           FROM compounds c WHERE c.is_active=1 AND c.update_at IS NOT NULL AND c.governorate=:gov""")
                 .param("url",url).param("gov",governate).query(AllCompound.class).list();
     }
