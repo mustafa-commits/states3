@@ -25,7 +25,7 @@ public class Advertisement {
 
     private String title;
 
-    @Formula("CONCAT('http://37.239.42.53:1800/realState/V1/api/CompoundAttachment/', image_url1)")
+    @Formula("CONCAT('http://72.60.81.126:8080/V1/api/CompoundAttachment/', image_url1)")
     private String imageUrl;
 
     @JsonIgnore

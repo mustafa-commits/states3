@@ -81,7 +81,7 @@ public class CompoundPost {
     @Transient
     public List<String> getImages() {
         return images.stream()
-                .map(fileName -> "http://37.239.42.53:1800/realState/V1/api/CompoundAttachment/" + fileName)
+                .map(fileName -> "http://72.60.81.126:8080/V1/api/CompoundAttachment/" + fileName)
                 .toList();
     }
 }
