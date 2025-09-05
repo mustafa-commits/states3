@@ -77,7 +77,7 @@ public class CompoundController implements SecuredRestController  {
 
 
     @GetMapping("/V1/api/AllCompounds/{page}")
-    public List<AllCompound> allCompounds(@PathVariable int page, @RequestParam Integer governate) {
+    public List<AllCompound> allCompounds(@PathVariable int page, @RequestParam(required = false) Integer governate) {
         return compoundService.allCompounds(page,governate);
 //        return compoundRepositoryJdbc.findActiveCompoundImages();
     }

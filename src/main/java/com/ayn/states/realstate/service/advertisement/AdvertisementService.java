@@ -43,7 +43,7 @@ public class AdvertisementService {
                 .toList();
     }
 
-    public Advertisement saveAd(String title, int targetId, AdvertisementType type, MultipartFile image, boolean isActive, String token, int period, Long advertiserPhone) throws IOException {
+    public Advertisement saveAd(String title, Integer targetId, AdvertisementType type, MultipartFile image, boolean isActive, String token, int period, Long advertiserPhone) throws IOException {
 
         String newfileNames=null;
         if (!image.isEmpty()) {

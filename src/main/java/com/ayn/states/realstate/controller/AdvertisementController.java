@@ -29,7 +29,7 @@ public class AdvertisementController implements SecuredRestController {
     @PostMapping("/V1/api/createAd")
     public Advertisement createAd(
             @RequestParam String title,
-            @RequestParam int targetId,
+            @RequestParam(required = false) Integer targetId,
             @RequestParam AdvertisementType type,
             @RequestParam boolean isActive,
             @RequestParam int period,
