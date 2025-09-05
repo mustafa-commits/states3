@@ -29,6 +29,7 @@ public class AdvertisementController implements SecuredRestController {
     @PostMapping("/V1/api/createAd")
     public Advertisement createAd(
             @RequestParam String title,
+            @RequestParam(required = false) String body,
             @RequestParam(required = false) Integer targetId,
             @RequestParam AdvertisementType type,
             @RequestParam boolean isActive,
@@ -37,7 +38,7 @@ public class AdvertisementController implements SecuredRestController {
             @RequestParam MultipartFile image,
             @RequestHeader(name = "Authorization") String token
             ) throws IOException {
-        return service.saveAd(title,targetId,type,image,isActive,token,period,advertiserPhone);
+        return service.saveAd(title,targetId,type,image,isActive,token,period,advertiserPhone,body);
     }
 
     @GetMapping("/V1/api/AdvertisementAttachment/{fileName}")

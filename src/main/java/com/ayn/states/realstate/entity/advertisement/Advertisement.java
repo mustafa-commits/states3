@@ -25,6 +25,8 @@ public class Advertisement {
 
     private String title;
 
+    private String body;
+
     @Formula("CONCAT('http://72.60.81.126:8080/V1/api/CompoundAttachment/', image_url1)")
     private String imageUrl;
 
@@ -45,15 +47,16 @@ public class Advertisement {
 
     private int createdBy;
 
-    public Advertisement(String title, String imageUrl, int targetId, AdvertisementType type, Boolean isActive, int createdBy,int period,Long advertiserPhone) {
+    public Advertisement(String title, String imageUrl, int targetId, AdvertisementType type, Boolean isActive, int createdBy,int period,Long advertiserPhone,String body) {
         this.title = title;
-        this.imageUrl = imageUrl;
+        this.imageUrl1 = imageUrl;
         this.targetId = targetId;
         this.type = type;
         this.isActive = isActive;
         this.createdBy = createdBy;
         this.period=period;
         this.advertiserPhone=advertiserPhone;
+        this.body=body;
     }
 
     public boolean isStillValid() {

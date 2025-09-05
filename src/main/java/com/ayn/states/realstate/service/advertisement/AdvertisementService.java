@@ -43,7 +43,7 @@ public class AdvertisementService {
                 .toList();
     }
 
-    public Advertisement saveAd(String title, Integer targetId, AdvertisementType type, MultipartFile image, boolean isActive, String token, int period, Long advertiserPhone) throws IOException {
+    public Advertisement saveAd(String title, Integer targetId, AdvertisementType type, MultipartFile image, boolean isActive, String token, int period, Long advertiserPhone, String body) throws IOException {
 
         String newfileNames=null;
         if (!image.isEmpty()) {
@@ -65,7 +65,7 @@ public class AdvertisementService {
         }
         return repo.save(
                 new Advertisement(title,newfileNames,targetId,type,isActive,Integer.parseInt(tokenService.decodeToken(token.substring(7)).getSubject())
-                        ,period,advertiserPhone)
+                        ,period,advertiserPhone,body)
         );
     }
 
