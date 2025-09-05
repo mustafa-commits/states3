@@ -3,6 +3,7 @@ package com.ayn.states.realstate.service.advertisement;
 import com.ayn.states.realstate.entity.advertisement.Advertisement;
 import com.ayn.states.realstate.entity.advertisement.AdvertisementType;
 import com.ayn.states.realstate.repository.advertisement.AdvertisementRepository;
+import com.ayn.states.realstate.service.msg.WhatsAppService;
 import com.ayn.states.realstate.service.token.TokenService;
 import com.tinify.Source;
 import com.tinify.Tinify;
@@ -29,6 +30,9 @@ public class AdvertisementService {
     @Autowired
     private TokenService tokenService;
 
+    @Autowired
+    private WhatsAppService whatsAppService;
+
     @Value("${AD_DIR}")
     private File basePath;
 
@@ -49,6 +53,15 @@ public class AdvertisementService {
             Tinify.setKey("28MYcgnnzHSNYkgQLt17tNMn80RnHk2c");
             Source source = Tinify.fromFile(new File(basePath + newfileNames).getPath());
             source.toFile(basePath + newfileNames);
+        }
+        if (AdvertisementType.TEXT.equals(type)) {
+            whatsAppService.sendMessage("+964"+advertiserPhone, String.format(
+                    """
+                    تمت اضافه الاعلان الخاص بكم على تطبيق زون
+                    الاعلان صالح لمـدة %s يوم
+                    """,
+                    period
+            ));
         }
         return repo.save(
                 new Advertisement(title,newfileNames,targetId,type,isActive,Integer.parseInt(tokenService.decodeToken(token.substring(7)).getSubject())

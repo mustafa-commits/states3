@@ -522,11 +522,14 @@ public class CompoundService implements CommandLineRunner {
 
     }
 
-    public List<AllCompound> allCompounds() {
+    public List<AllCompound> allCompounds(int page, Integer governate) {
         return jdbcClient.sql("""
           SELECT c.id AS compoundId, c.address, c.views_count AS viewsCount,CONCAT(:url,c.cover_image_url)  AS coverImage,CONCAT(:url,c.thumbnail_url) AS thumbnailUrl
-          FROM compounds c WHERE c.is_active=1 AND c.approved_at IS NOT NULL""")
-                .param("url",url).query(AllCompound.class).list();
+          FROM compounds c WHERE c.is_active=1 AND c.approved_at IS NOT NULL
+          AND (:governate IS NULL OR c.governorate = :governate)
+           LIMIT :startFrom, 10
+          """).param("url",url).param("governate",governate)
+            .param("startFrom",((page - 1) * 10)).query(AllCompound.class).list();
     }
 
     public List<AllCompound> compoundsByGovernate(int governate) {
@@ -547,6 +550,12 @@ public class CompoundService implements CommandLineRunner {
         ApsAlert apsAlert= ApsAlert.builder().setTitle("Zone").build();
         return ApnsConfig.builder()
                 .setAps(Aps.builder().setSound("1").putAllCustomData(map2).setAlert(apsAlert).build()).build();
+    }
+
+    public List<Lookup> compoundNames() {
+        return jdbcClient.sql("""
+            SELECT c.id , c.name
+          FROM compounds c""").query(Lookup.class).list();
     }
 }
 
