@@ -33,7 +33,7 @@ public class Advertisement {
     @JsonIgnore
     private String imageUrl1;
 
-    private int targetId;
+    private Integer targetId;
 
     private AdvertisementType type;
 
@@ -47,7 +47,7 @@ public class Advertisement {
 
     private int createdBy;
 
-    public Advertisement(String title, String imageUrl, int targetId, AdvertisementType type, Boolean isActive, int createdBy,int period,Long advertiserPhone,String body) {
+    public Advertisement(String title, String imageUrl, Integer targetId, AdvertisementType type, Boolean isActive, int createdBy,int period,Long advertiserPhone,String body) {
         this.title = title;
         this.imageUrl1 = imageUrl;
         this.targetId = targetId;
