@@ -1,13 +1,39 @@
-<configuration>
-    <appender name="FILE" class="ch.qos.logback.core.FileAppender">
-        <file>logs/states.log</file>
+<configuration scan="true" scanPeriod="60 seconds" debug="false">
 
+    <!-- ================= Console Logging ================= -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
-            <pattern>%d [%thread] %-5level %logger{35} - %msg%n</pattern>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} %-5level [%thread] %logger{36} - %msg%n</pattern>
         </encoder>
     </appender>
-    <root level="INFO">
-        <appender-ref ref="FILE" />
-    </root>
-</configuration>
 
+    <!-- ================= File Logging with Rotation ================= -->
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>/app/logs/app.log</file>
+
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <!-- Daily rollover + max size per file -->
+            <fileNamePattern>/app/logs/app-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <maxFileSize>10MB</maxFileSize>
+
+            <!-- Total size cap (all logs combined) -->
+            <totalSizeCap>100MB</totalSizeCap>
+
+            <!-- Keep logs for 30 days -->
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} %-5level [%thread] %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- ================= Root Logger ================= -->
+    <root level="INFO">
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="FILE"/>
+    </root>
+
+    <!-- ================= Package-specific log levels ================= -->
+    <logger name="com.ayn.states" level="DEBUG"/>
+</configuration>

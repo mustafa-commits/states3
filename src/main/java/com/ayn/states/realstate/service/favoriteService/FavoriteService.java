@@ -88,7 +88,7 @@ public class FavoriteService {
                                          CONCAT(z.first_name, ' ',z.last_name) AS publisherName,
                                          z.phone AS publisherPhone,
                                          count(distinct ua.id)  as viewCount,
-                                        case when ua2.id is not null then true else false end as isFavorite
+                                        case when MAX(ua2.id) is not null then true else false end as isFavorite
                     FROM states s
                     left JOIN attachment a ON s.state_id = a.state_id
                     JOIN fnd_governorates g ON s.governorate = g.code

@@ -84,7 +84,7 @@ public class StatesService {
                                          CONCAT(z.first_name, ' ',z.last_name) AS publisherName,
                                          z.phone AS publisherPhone,
                                          count(distinct ua.id)  as viewCount,
-                                        case when ua2.id is not null then true else false end as isFavorite
+                                        case when MAX(ua2.id) is not null then true else false end as isFavorite
                     FROM states s
                     left JOIN attachment a ON s.state_id = a.state_id
                     JOIN fnd_governorates g ON s.governorate = g.code
@@ -175,7 +175,7 @@ public class StatesService {
                                          CONCAT(z.first_name, ' ',z.last_name) AS publisherName,
                                          z.phone AS publisherPhone,
                                          count(distinct ua.id)  as viewCount,
-                                        case when ua2.id is not null then true else false end as isFavorite
+                                        case when MAX(ua2.id) is not null then true else false end as isFavorite
                         FROM states s
                         left JOIN attachment a ON s.state_id = a.state_id
                         JOIN fnd_governorates g ON s.governorate = g.code
@@ -220,7 +220,7 @@ public class StatesService {
                                          CONCAT(z.first_name, ' ',z.last_name) AS publisherName,
                                          z.phone AS publisherPhone,
                                          count(distinct ua.id)  as viewCount,
-                                        case when ua2.id is not null then true else false end as isFavorite
+                                        case when MAX(ua2.id) is not null then true else false end as isFavorite
                         FROM states s
                         left JOIN attachment a ON s.state_id = a.state_id
                         JOIN fnd_governorates g ON s.governorate = g.code
@@ -261,7 +261,7 @@ public class StatesService {
                                          CONCAT(z.first_name, ' ',z.last_name) AS publisherName,
                                          z.phone AS publisherPhone,
                                          count(distinct ua.id)  as viewCount,
-                                        case when ua2.id is not null then true else false end as isFavorite
+                                        case when MAX(ua2.id) is not null then true else false end as isFavorite
                         FROM states s
                         left JOIN attachment a ON s.state_id = a.state_id
                         JOIN fnd_governorates g ON s.governorate = g.code
@@ -302,7 +302,7 @@ public class StatesService {
                                          CONCAT(z.first_name, ' ',z.last_name) AS publisherName,
                                          z.phone AS publisherPhone,
                                          count(distinct ua.id)  as viewCount,
-                                        case when ua2.id is not null then true else false end as isFavorite
+                                        case when MAX(ua2.id) is not null then true else false end as isFavorite
                         FROM states s
                         left JOIN attachment a ON s.state_id = a.state_id
                         JOIN fnd_governorates g ON s.governorate = g.code
@@ -448,7 +448,7 @@ public class StatesService {
                                          CONCAT(z.first_name, ' ',z.last_name) AS publisherName,
                                          z.phone AS publisherPhone,
                                          count(distinct ua.id)  as viewCount,
-                                        case when ua2.id is not null then true else false end as isFavorite,
+                                        case when MAX(ua2.id) is not null then true else false end as isFavorite,
                                         count(distinct ua3.id)  as favCount,
                                         ST_Distance_Sphere(s.location, ST_SRID(POINT(:lng, :lat),4326))/ 1000 AS distance
                         FROM states s
@@ -492,7 +492,7 @@ public class StatesService {
                                          CONCAT(z.first_name, ' ',z.last_name) AS publisherName,
                                          z.phone AS publisherPhone,
                                          count(distinct ua.id)  as viewCount,
-                                        case when ua2.id is not null then true else false end as isFavorite,
+                                        case when MAX(ua2.id) is not null then true else false end as isFavorite,
                                         count(distinct ua3.id)  as favCount,
                                         ST_Distance_Sphere(s.location, ST_SRID(POINT(:lng, :lat),4326))/ 1000 AS distance
                         FROM states s
@@ -531,7 +531,7 @@ public class StatesService {
                                          CONCAT(z.first_name, ' ',z.last_name) AS publisherName,
                                          z.phone AS publisherPhone,
                                          count(distinct ua.id)  as viewCount,
-                                        case when ua2.id is not null then true else false end as isFavorite
+                                        case when MAX(ua2.id) is not null then true else false end as isFavorite
                         FROM states s
                         left JOIN attachment a ON s.state_id = a.state_id
                         JOIN fnd_governorates g ON s.governorate = g.code

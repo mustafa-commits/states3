@@ -14,8 +14,8 @@ public interface AdvertisementRepository extends JpaRepository<Advertisement, Lo
 
     @Query(value = """
         SELECT * FROM Advertisement a
-        WHERE a.active = true
-          AND DATE_ADD(a.created_at, INTERVAL a.period_days DAY) <= NOW()
+        WHERE a.is_active = true
+          AND DATE_ADD(a.created_at, INTERVAL a.period DAY) <= NOW()
     """, nativeQuery = true)
     List<Advertisement> findExpiredAds();
 
@@ -23,7 +23,7 @@ public interface AdvertisementRepository extends JpaRepository<Advertisement, Lo
     SELECT * FROM Advertisement a
     WHERE a.active = true
       AND DATE_ADD(a.created_at, INTERVAL a.period_days DAY) > NOW()
-      AND DATE_SUB(DATE_ADD(a.created_at, INTERVAL a.period_days DAY), INTERVAL 2 DAY) <= NOW()
+      AND DATE_SUB(DATE_ADD(a.created_at, INTERVAL a.period DAY), INTERVAL 2 DAY) <= NOW()
 """, nativeQuery = true)
     List<Advertisement> findAdsExpiringSoon();
 
