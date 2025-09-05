@@ -36,7 +36,7 @@ public class RealStatesController implements SecuredRestController {
 
     @PostMapping("V1/api/AllStates/{page}")
     public List<StatesDTO> allStates(
-    @RequestParam int page,
+    @PathVariable int page,
     @RequestParam(required = false) Integer governate,
     @RequestParam(required = false) Integer propertyType,
     @RequestParam(required = false) Integer propertySubType,
