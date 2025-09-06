@@ -41,7 +41,7 @@ public interface CompoundRepository extends JpaRepository<Compound, Long> {
 
     @Query("""
                 SELECT new com.ayn.states.realstate.dto.compound.CompoundDTO2(
-                    DISTINCT c,
+                    c,
                     CASE WHEN COUNT(cf) > 0 THEN true ELSE false END
                 )
                 FROM Compound c
