@@ -136,21 +136,19 @@ public class CallTrackingController implements SecuredRestController {
      * Check if user has called today (for rate limiting)
      * GET /api/v1/call-tracking/check-today/{compoundId}
      */
-    @GetMapping("/statistics-today/{compoundId}")
+    //@GetMapping("/statistics-today/{compoundId}")
     public ResponseEntity<Map<String, Object>> checkUserCalledToday(
-            @PathVariable Long compoundId,
-            @RequestParam(required = false) String deviceId,
-            Authentication authentication) {
+            @PathVariable Long compoundId,@RequestHeader(name = "Authorization") String token) {
 
         try {
-            Long appUserId = null;
-
-            if (authentication != null && authentication.isAuthenticated()) {
-                // appUserId = extractUserIdFromAuthentication(authentication);
-            }
+            Long userId = null;
+            if (tokenService.decodeToken(token.substring(7)).getSubject().equals("0")){
+                userId=tokenService.decodeToken(token.substring(7)).getClaim("UnRegistered");
+            }else
+                userId=Long.parseLong(tokenService.decodeToken(token.substring(7)).getSubject());
 
             boolean hasCalledToday = callClickTrackingService.hasUserCalledToday(
-                    compoundId, appUserId, deviceId);
+                    compoundId, userId, "1");
 
             Map<String, Object> response = new HashMap<>();
             response.put("compoundId", compoundId);
