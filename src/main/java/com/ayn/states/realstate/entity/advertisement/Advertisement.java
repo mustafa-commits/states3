@@ -27,7 +27,7 @@ public class Advertisement {
 
     private String body;
 
-    @Formula("CONCAT('http://72.60.81.126:8080/V1/api/CompoundAttachment/', image_url1)")
+    @Formula("CONCAT('http://72.60.81.126:8080V1/api/AdvertisementAttachment/', image_url1)")
     private String imageUrl;
 
     @JsonIgnore
@@ -46,6 +46,7 @@ public class Advertisement {
     private LocalDateTime createdAt = LocalDateTime.now();
 
     private int createdBy;
+
 
     public Advertisement(String title, String imageUrl, Integer targetId, AdvertisementType type, Boolean isActive, int createdBy,int period,Long advertiserPhone,String body) {
         this.title = title;
