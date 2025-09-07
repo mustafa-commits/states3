@@ -104,7 +104,7 @@ public class CallTrackingController {
      * Get recent call clicks for a compound
      * GET /api/v1/call-tracking/recent/{compoundId}
      */
-    @GetMapping("/recent/{compoundId}")
+    //@GetMapping("/recent/{compoundId}")
     public ResponseEntity<Map<String, Object>> getRecentCallClicks(
             @PathVariable Long compoundId,
             @RequestParam(defaultValue = "10") int limit) {
