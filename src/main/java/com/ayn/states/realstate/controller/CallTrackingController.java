@@ -1,5 +1,6 @@
 package com.ayn.states.realstate.controller;
 
+import com.ayn.states.realstate.SecuredRestController;
 import com.ayn.states.realstate.entity.tracking.CallClickTracking;
 import com.ayn.states.realstate.service.token.TokenService;
 import com.ayn.states.realstate.service.tracking.CallClickTrackingService;
@@ -22,7 +23,7 @@ import java.util.Map;
 @RequestMapping("/V1/api/tracking")
 @RequiredArgsConstructor
 @Slf4j
-public class CallTrackingController {
+public class CallTrackingController implements SecuredRestController {
 
     private final CallClickTrackingService callClickTrackingService;
 
