@@ -548,6 +548,7 @@ public class StatesService {
                                             ,s.created_user, s.published_at, g.name_ar , s.state_type, s.state_type ,s.address,s.payment_method,s.building_age ,l3.value
                         ORDER BY s.published_at DESC
                      """)
+                .param("link", stateLink)
                 .param("userId",Long.parseLong(tokenService.decodeToken(token.substring(7)).getSubject())).query(StatesDTO.class).list();
     }
 
@@ -580,6 +581,7 @@ public class StatesService {
                                             ,s.created_user, s.published_at, g.name_ar , s.state_type, s.state_type ,s.address,s.payment_method,s.building_age ,l3.value
                         ORDER BY s.published_at DESC
                      """)
+                .param("link", stateLink)
                 .param("stateId",stateId).query(StatesDTO.class).single();
     }
 }
