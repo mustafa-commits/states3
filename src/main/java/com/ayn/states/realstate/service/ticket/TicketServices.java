@@ -90,7 +90,7 @@ public class TicketServices {
 
     public List<TicketDetails> getDetails(int ticketId, int page) {
 
-        return ticketDetailsRepo.findAllByTicketIdOrderByIdDesc(ticketId, PageRequest.of(page-1, 100));
+        return ticketDetailsRepo.findAllByTicketIdOrderByIdDesc(ticketId, PageRequest.of((page > 0) ? page - 1 : 0, 100));
 
     }
 

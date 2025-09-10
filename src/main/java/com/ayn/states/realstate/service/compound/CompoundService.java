@@ -384,7 +384,7 @@ public class CompoundService implements CommandLineRunner {
 
 
     public List<Compound> unPublishedCompounds(int page) {
-        List<Compound> compounds = compoundRepository.unPublishedCompounds(PageRequest.of(page-1, 10));
+        List<Compound> compounds = compoundRepository.unPublishedCompounds(PageRequest.of((page > 0) ? page - 1 : 0, 10));
         return compounds;
     }
 
