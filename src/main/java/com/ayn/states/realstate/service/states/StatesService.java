@@ -520,6 +520,7 @@ public class StatesService {
 
     public List<StatesDTO> getmyState(String token) {
 
+
         return jdbcClient.sql("""
                             SELECT s.state_id AS stateId, s.description, s.area, s.num_of_rooms AS numOfRooms ,s.garage_size AS garageSize,
                                                s.num_of_bath_rooms AS numOfBathRooms, s.num_of_storey AS numOfStorey,s.num_of_bed_rooms AS numOfBedrooms, l.value AS propertyType
@@ -552,7 +553,14 @@ public class StatesService {
                 .param("userId",Long.parseLong(tokenService.decodeToken(token.substring(7)).getSubject())).query(StatesDTO.class).list();
     }
 
-    public StatesDTO getStateById(int stateId) {
+    public StatesDTO getStateById(int stateId, String token) {
+
+        Long userId = null;
+        if (tokenService.decodeToken(token.substring(7)).getSubject().equals("0")){
+            userId=tokenService.decodeToken(token.substring(7)).getClaim("UnRegistered");
+        }else
+            userId=Long.parseLong(tokenService.decodeToken(token.substring(7)).getSubject());
+
         return jdbcClient.sql("""
                             SELECT s.state_id AS stateId, s.description, s.area, s.num_of_rooms AS numOfRooms ,s.garage_size AS garageSize,
                                                s.num_of_bath_rooms AS numOfBathRooms, s.num_of_storey AS numOfStorey,s.num_of_bed_rooms AS numOfBedrooms, l.value AS propertyType
@@ -581,7 +589,7 @@ public class StatesService {
                                             ,s.created_user, s.published_at, g.name_ar , s.state_type, s.state_type ,s.address,s.payment_method,s.building_age ,l3.value
                         ORDER BY s.published_at DESC
                      """)
-                .param("link", stateLink)
+                .param("link", stateLink).param("userId",userId)
                 .param("stateId",stateId).query(StatesDTO.class).single();
     }
 }

@@ -54,8 +54,8 @@ public class RealStatesController implements SecuredRestController {
 
 
     @PostMapping("V1/api/State/{stateId}")
-    public StatesDTO getStateById( @PathVariable int stateId) {
-        return service.getStateById(stateId);
+    public StatesDTO getStateById(@RequestHeader("Authorization") String token, @PathVariable int stateId) {
+        return service.getStateById(stateId,token);
     }
 
     @GetMapping("V1/api/StateForSale/{page}")
