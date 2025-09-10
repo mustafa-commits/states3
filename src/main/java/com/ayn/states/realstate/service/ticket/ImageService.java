@@ -30,7 +30,7 @@ public class ImageService {
         String originalFilename = file.getOriginalFilename();
         assert originalFilename != null;
         String newFilename = System.currentTimeMillis() + originalFilename.substring(originalFilename.lastIndexOf("."));
-        String filePath = environment.getProperty("FOLDER_PATH") + newFilename;
+        String filePath = environment.getProperty("TICKET_ATT_DIR") + newFilename;
         imageFileRepo.save(ImageFile.builder()
                 .name(newFilename)
                 .type(String.valueOf(contentType))
@@ -43,14 +43,14 @@ public class ImageService {
     public byte[] downloadFileFromFileSystem(String fileName) throws IOException {
         Optional<ImageFile> fileData = imageFileRepo.findFirstByName(fileName);
         if (fileData.isPresent()) {
-            String filePath = environment.getProperty("FOLDER_PATH") + fileData.get().getName();
+            String filePath = environment.getProperty("TICKET_ATT_DIR") + fileData.get().getName();
             return Files.readAllBytes(new File(filePath).toPath());
         } else
             return null;
     }
 
     public byte[] downloadFileFromFileSystemTemp() throws IOException {
-        String filePath = environment.getProperty("FOLDER_PATH") + "home.mp4";
+        String filePath = environment.getProperty("TICKET_ATT_DIR") + "home.mp4";
         return Files.readAllBytes(new File(filePath).toPath());
 
     }

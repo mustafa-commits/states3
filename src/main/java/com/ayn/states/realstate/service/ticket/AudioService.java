@@ -30,7 +30,7 @@ public class AudioService {
 
         String originalFilename = file.getOriginalFilename();
         String newFilename = System.currentTimeMillis() + (originalFilename != null ? originalFilename.substring(originalFilename.lastIndexOf(".")) : null);
-        String filePath = environment.getProperty("FOLDER_AUDIO_PATH") + newFilename;
+        String filePath = environment.getProperty("TICKET_AUDIO_DIR") + newFilename;
 
         imageFileRepo.save(ImageFile.builder()
                 .name(newFilename)
@@ -44,7 +44,7 @@ public class AudioService {
 
     public byte[] downloadAudioFromFileSystem(String fileName) throws IOException {
         Optional<ImageFile> fileData = imageFileRepo.findFirstByName(fileName);
-        String filePath = environment.getProperty("FOLDER_AUDIO_PATH") + fileData.orElseThrow(() -> new UnauthorizedException("file not found")).getName();
+        String filePath = environment.getProperty("TICKET_AUDIO_DIR") + fileData.orElseThrow(() -> new UnauthorizedException("file not found")).getName();
         return Files.readAllBytes(new File(filePath).toPath());
     }
 

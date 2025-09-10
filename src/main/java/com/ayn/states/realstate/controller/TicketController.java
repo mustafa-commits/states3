@@ -63,8 +63,8 @@ public class TicketController implements SecuredRestController {
 
     @PostConstruct
     public void init() {
-        imagePath = environment.getProperty("IMAGEPATH");
-        audioPath = environment.getProperty("AUDIOPATH");
+        imagePath = environment.getProperty("TICKET_ATT_URL");
+        audioPath = environment.getProperty("TICKET_AUDIO_URL");
     }
 
     record CreateTicket(String title, int user_id, String content){}
