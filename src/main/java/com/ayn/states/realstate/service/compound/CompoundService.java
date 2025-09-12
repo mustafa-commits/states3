@@ -407,9 +407,9 @@ public class CompoundService implements CommandLineRunner {
     public CompoundPost addPost(String title, String content, List<MultipartFile> images, long compoundId, String token) {
 
         Jwt jwt = tokenService.decodeToken(token.substring(7));
-        if (!jwt.getClaim("scope").equals("DashboardUser")) {
-            throw new UnauthorizedException("Not Authorized");
-        }
+//        if (!jwt.getClaim("scope").equals("DashboardUser")) {
+//            throw new UnauthorizedException("Not Authorized");
+//        }
         compoundRepository.findById(compoundId)
                 .orElseThrow(() -> new UnauthorizedException("Compound not found"));
 
