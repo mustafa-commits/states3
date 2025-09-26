@@ -78,6 +78,7 @@ public class UserActions {
         action.setState(state);
         action.setUser(user);
         action.setActionType(ActionType.VIEW);
+        action.setActionTime(LocalDateTime.now());
 //        action.setIpAddress(ipAddress);
 //        action.setUserAgent(userAgent);
 //        action.setSessionId(sessionId);
@@ -89,6 +90,7 @@ public class UserActions {
         action.setCompound(compound);
         action.setUser(user);
         action.setActionType(ActionType.VIEW);
+        action.setActionTime(LocalDateTime.now());
 //        action.setIpAddress(ipAddress);
 //        action.setUserAgent(userAgent);
 //        action.setSessionId(sessionId);
