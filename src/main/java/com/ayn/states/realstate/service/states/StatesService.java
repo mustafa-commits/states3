@@ -625,7 +625,7 @@ public class StatesService {
                         LEFT JOIN user_actions ua2 ON ua2.state_id = s.state_id AND ua2.action_type = 'FAVORITE' and ( ua2.app_user_id =:userId or ua2.unregistered_id =:userId)
                         WHERE s.is_active = 1 AND s.published_at IS NOT NULL
                         AND (:governate IS NULL OR s.governorate = :governate)
-                        AND (:propertyType IS NULL OR s.property_type = 4)
+                        AND s.property_type = 4
                         AND (:propertySubType IS NULL OR s.property_sub_type = :propertySubType)
                         group by s.state_id, s.description, s.area, s.num_of_rooms,s.garage_size,
                                                    s.num_of_bath_rooms, s.num_of_storey,s.property_type,s.ownership_type, s.price, s.longitude, s.latitude, s.is_active
