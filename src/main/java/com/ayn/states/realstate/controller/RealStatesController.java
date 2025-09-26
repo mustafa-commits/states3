@@ -47,6 +47,19 @@ public class RealStatesController implements SecuredRestController {
         return service.getALLState(page, governate, token, propertySubType, propertyType, sortBy, order);
     }
 
+    @PostMapping("V1/api/lands/{page}")
+    public List<StatesDTO> allLands(
+            @PathVariable int page,
+            @RequestParam(required = false) Integer governate,
+            @RequestParam(required = false) Integer propertySubType,
+            @RequestParam(required = false) Integer area,
+            @Parameter(description = "price date") @RequestParam(required = false) String sortBy,
+            @Parameter(description = "asc desc") @RequestParam(required = false) String order,
+            @Parameter(hidden = true) @RequestHeader("Authorization") String token
+    ) {
+        return service.getAllLands(page, governate, token, propertySubType,  sortBy, order,area);
+    }
+
     @PostMapping("V1/api/myStates")
     public List<StatesDTO> myStates(@RequestHeader("Authorization") String token) {
         return service.getmyState(token);
