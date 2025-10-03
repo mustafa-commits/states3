@@ -1,6 +1,17 @@
 version: '3.8'
 
 services:
+
+  db:
+    image: mysql:8
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: mydb
+    volumes:
+      - mysql-data:/var/lib/mysql
+    ports:
+      - "3306:3306"
+
   springboot-app:
     build: .
     image: realstate-app
@@ -16,15 +27,7 @@ services:
     depends_on:
       - db
 
-  db:
-    image: mysql:8
-    environment:
-      MYSQL_ROOT_PASSWORD: rootpassword
-      MYSQL_DATABASE: mydb
-    volumes:
-      - mysql-data:/var/lib/mysql
-    ports:
-      - "3306:3306"
+
 
 volumes:
   mysql-data:
