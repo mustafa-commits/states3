@@ -351,9 +351,9 @@ public class StatesService {
         );
 
 
-            features.forEach(feature -> {
-                stateFeatureRepo.save(new PropertyFeatures(feature,state));
-            });
+//            features.forEach(feature -> {
+//                stateFeatureRepo.save(new PropertyFeatures(feature,state));
+//            });
 
         if (attachments != null) {
 
