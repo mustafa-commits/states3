@@ -84,7 +84,7 @@ public class AdvertisementService {
             return ResponseEntity.ok()
                     .contentType(contentType)
                     .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileName + "\"")
-                    .body(Files.readAllBytes(new File(basePath + fileName).toPath()));
+                    .body(Files.readAllBytes(new File(basePath +"\""+ fileName).toPath()));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
