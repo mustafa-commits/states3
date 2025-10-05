@@ -18,8 +18,8 @@ public interface TicketDetailsRepo extends JpaRepository<TicketDetails, Integer>
     @Query("""
            select new com.ayn.states.realstate.entity.ticket.TicketDetails(td.Id,td.Content ,td.ticketId,td.messageType, td.Sender, td.Receiver, td.createAt,td.ModifiedAt, td.createdUser,td.ModifiedUser, td.IsActive, td.seenDate,td.replayId,
            CASE WHEN td.messageType = MessageType.TEXT THEN tr.Content
-           WHEN td.messageType = MessageType.M4A THEN 'http://72.60.81.126:8080/V1/api/stream-audio/' || tr.Content
-           ELSE 'http://72.60.81.126:8080/V1/api/downloadImg/' || tr.Content END ) from TicketDetails td
+           WHEN td.messageType = MessageType.M4A THEN 'http://31.97.185.232:8080/V1/api/stream-audio/' || tr.Content
+           ELSE 'http://31.97.185.232:8080/V1/api/downloadImg/' || tr.Content END ) from TicketDetails td
            LEFT JOIN TicketDetails tr on (tr.Id=td.replayId)
            where td.ticketId = :ticketId order by td.createAt DESC""")
     List<TicketDetails> findAllByTicketIdOrderByIdDesc(@Param("ticketId")int ticketId, Pageable paging);

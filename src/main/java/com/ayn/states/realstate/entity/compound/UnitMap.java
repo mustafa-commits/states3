@@ -47,7 +47,7 @@ public class UnitMap {
         }
 
         return imageUrl.stream()
-                .map(p -> "http://72.60.81.126:8080/V1/api/CompoundAttachment/" + p)
+                .map(p -> "http://31.97.185.232:8080/V1/api/CompoundAttachment/" + p)
                 .collect(Collectors.toList());
     }
 

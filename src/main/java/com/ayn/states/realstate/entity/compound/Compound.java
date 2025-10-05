@@ -30,7 +30,7 @@ public class Compound {
     private Long id;
 
     // صورة الغلاف الخارجية
-    @Formula("CONCAT('http://72.60.81.126:8080/V1/api/CompoundAttachment/', cover_image_url)")
+    @Formula("CONCAT('http://31.97.185.232:8080/V1/api/CompoundAttachment/', cover_image_url)")
     private String coverImageUrl;
 
 
@@ -46,7 +46,7 @@ public class Compound {
     private boolean followedByUser;
 
     // صورة مصغرة
-    @Formula("CONCAT('http://72.60.81.126:8080/V1/api/CompoundAttachment/', thumbnail_url)")
+    @Formula("CONCAT('http://31.97.185.232:8080/V1/api/CompoundAttachment/', thumbnail_url)")
     private String thumbnailUrl;
 
     // العنوان
@@ -84,7 +84,7 @@ public class Compound {
     private Set<UnitMap> unitMaps;
 
     // صورة ثلاثية الأبعاد
-    @Formula("CONCAT('http://72.60.81.126:8080/V1/api/CompoundAttachment/', model3d_url)")
+    @Formula("CONCAT('http://31.97.185.232:8080/V1/api/CompoundAttachment/', model3d_url)")
     private String model3dUrl;
 
     // موقع المجمع على الخارطة
