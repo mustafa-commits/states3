@@ -72,25 +72,31 @@ public class AdvertisementService {
     public ResponseEntity<?> getAttachment(String fileName) {
         try {
             String fileExtension = FilenameUtils.getExtension(fileName);
-            MediaType contentType = MediaType.APPLICATION_JSON;
-            if (fileExtension.equalsIgnoreCase("pdf")) {
+            MediaType contentType = MediaType.APPLICATION_OCTET_STREAM; // default
+
+            if ("pdf".equalsIgnoreCase(fileExtension)) {
                 contentType = MediaType.APPLICATION_PDF;
-            } else if (fileExtension.equalsIgnoreCase("jpg") || fileExtension.equalsIgnoreCase("jpeg")) {
-                contentType = MediaType.valueOf("image/jpeg");
-            } else if (fileExtension.equalsIgnoreCase("png")) {
-                contentType = MediaType.valueOf("image/png");
+            } else if ("jpg".equalsIgnoreCase(fileExtension) || "jpeg".equalsIgnoreCase(fileExtension)) {
+                contentType = MediaType.IMAGE_JPEG;
+            } else if ("png".equalsIgnoreCase(fileExtension)) {
+                contentType = MediaType.IMAGE_PNG;
             }
-            // Build the response with file content
+
+            File file = new File(basePath, fileName);
+
+            if (!file.exists()) {
+                throw new RuntimeException("File not found: " + file.getAbsolutePath());
+            }
+
             return ResponseEntity.ok()
                     .contentType(contentType)
                     .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileName + "\"")
-                    .body(Files.readAllBytes(new File(basePath +"\""+ fileName).toPath()));
+                    .body(Files.readAllBytes(file.toPath()));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
-
     }
+
 
 
 }
