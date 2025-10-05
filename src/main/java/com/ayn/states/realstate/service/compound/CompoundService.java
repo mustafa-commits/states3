@@ -518,6 +518,7 @@ public class CompoundService implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
+        jdbcClient.sql("SET GLOBAL sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''))").update();
         compoundPostRepo.findById(1L);
 
     }

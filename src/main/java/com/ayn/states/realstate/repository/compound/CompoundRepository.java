@@ -53,7 +53,6 @@ public interface CompoundRepository extends JpaRepository<Compound, Long> {
                   AND c.id = :compoundId
                   AND c.approvedAt IS NOT NULL
                   
-                GROUP BY c
                  ORDER BY p.approvedAt DESC
                 """)
     CompoundDTO2 findCompoundWithUserFollow(@Param("compoundId") Long compoundId,

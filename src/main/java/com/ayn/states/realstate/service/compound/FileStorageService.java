@@ -47,8 +47,8 @@ public class FileStorageService {
         this.fileStorageLocation = Paths.get(uploadDir).toAbsolutePath().normalize();
 
         // Create directories if not exist
-        Files.createDirectories(this.fileStorageLocation);
-        Files.createDirectories(this.PostsFileStorageLocation);
+//        Files.createDirectories(this.fileStorageLocation); //todo
+//        Files.createDirectories(this.PostsFileStorageLocation);
     }
 
     public String storeFile(MultipartFile file) {
