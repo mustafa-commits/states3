@@ -74,6 +74,7 @@ public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Excepti
                     .requestMatchers("/v3/api-docs/**","/swagger-ui","/swagger-ui/**").permitAll()
                     .requestMatchers("/V1/api/getToken","/V1/api/resetCache/**").permitAll()
                     .requestMatchers("/V1/api/settings/GetSupportContact/**").permitAll()
+                    .requestMatchers("/V1/api/dashboard/auth/**").permitAll()
                     .requestMatchers("/V1/api/stream-audio/**","/V1/api/stateAttachment/**").permitAll()
                     .anyRequest().authenticated()
             ).cors(withDefaults())

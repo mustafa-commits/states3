@@ -41,7 +41,7 @@ public class DashboardService {
 
     public LoginResponse login(LoginRequest request) {
         DashboardUser user = userRepo.findByUsername(request.username())
-                .orElseThrow(() -> new RuntimeException("Invalid username or password"));
+                .orElseThrow(() -> new UnauthorizedException("Invalid username or password"));
 
         if (!user.isActive() || !encoder.matches(request.password(), user.getPassword())) {
             throw new UnauthorizedException("Invalid username or password");
