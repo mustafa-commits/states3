@@ -1,5 +1,6 @@
 package com.ayn.states.realstate.dto.states;
 
+import com.ayn.states.realstate.dto.feature.FeatureDto;
 import com.ayn.states.realstate.enums.Category;
 import com.ayn.states.realstate.enums.PaymentMethod;
 import lombok.AllArgsConstructor;
@@ -9,7 +10,10 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 
 @Data
@@ -46,7 +50,7 @@ public class StatesDTO {
     private PaymentMethod paymentMethod;
     private List<String> attachments = new ArrayList<>();
 
-    private List<String> features = new ArrayList<>();
+    private List<FeatureDto> features = new ArrayList<>();
 
     private String publisherName;
     private String publisherPhone;
@@ -56,5 +60,23 @@ public class StatesDTO {
 
     private int favCount;
 
+    // Custom setter to parse the JSON string from SQL
+    public void setFeaturesJson(String featuresJson) {
+        if (featuresJson != null && !featuresJson.isEmpty()) {
+            this.features = Arrays.stream(featuresJson.split("\\|\\|\\|"))
+                    .map(json -> {
+                        try {
+                            // Simple JSON parsing
+                            String name = json.substring(json.indexOf("\"name\":\"") + 8, json.indexOf("\",\"imageUrl\""));
+                            String imageUrl = json.substring(json.indexOf("\"imageUrl\":\"") + 12, json.lastIndexOf("\""));
+                            return new FeatureDto(name, imageUrl);
+                        } catch (Exception e) {
+                            return null;
+                        }
+                    })
+                    .filter(Objects::nonNull)
+                    .collect(Collectors.toList());
+        }
+    }
 
 }

@@ -19,9 +19,9 @@ public class PropertyFeatures {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long featureId;
+    private Long Id;
 
-    private String featureName;
+    private Long featureId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "state_id") // Foreign key column
@@ -29,8 +29,8 @@ public class PropertyFeatures {
     private States featuredState;
 
 
-    public PropertyFeatures(String featureName, States featuredState) {
-        this.featureName = featureName;
+    public PropertyFeatures(Long featureId, States featuredState) {
+        this.featureId = featureId;
         this.featuredState = featuredState;
     }
 

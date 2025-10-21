@@ -6,12 +6,14 @@ import com.ayn.states.realstate.dto.states.StatesDTO;
 import com.ayn.states.realstate.dto.states.StatesDTO2;
 import com.ayn.states.realstate.entity.att.Attachments;
 import com.ayn.states.realstate.entity.lookup.UrlImageType;
+import com.ayn.states.realstate.entity.propertyFeature.Feature;
 import com.ayn.states.realstate.entity.propertyFeature.PropertyFeatures;
 import com.ayn.states.realstate.entity.states.States;
 import com.ayn.states.realstate.enums.PaymentMethod;
 import com.ayn.states.realstate.enums.Category;
 import com.ayn.states.realstate.exception.UnauthorizedException;
 import com.ayn.states.realstate.repository.attachment.AttachmentsRepo;
+import com.ayn.states.realstate.repository.feature.FeatureRepository;
 import com.ayn.states.realstate.repository.feature.StateFeatureRepo;
 import com.ayn.states.realstate.repository.state.StatesRepo;
 import com.ayn.states.realstate.service.token.TokenService;
@@ -30,9 +32,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @Service
 public class StatesService {
@@ -80,7 +80,7 @@ public class StatesService {
                                ,s.building_age AS buildingAge , s.price, s.longitude, s.latitude
                                         , s.published_at AS publishedAt,  g.name_ar AS governorate , s.state_type AS category ,
                                           s.address , s.payment_method AS paymentMethod ,GROUP_CONCAT(DISTINCT CONCAT(:link, a.url_image) SEPARATOR  ',') AS attachments,
-                                         GROUP_CONCAT(DISTINCT p.feature_code SEPARATOR  ',') AS features,
+                                         GROUP_CONCAT(DISTINCT CONCAT('{"name":"', f.name, '","imageUrl":"', :link, f.image_url, '"}') SEPARATOR '|||') AS featuresJson,
                                          CONCAT(z.first_name, ' ',z.last_name) AS publisherName,
                                          z.phone AS publisherPhone,
                                          count(distinct ua.id)  as viewCount,
@@ -91,7 +91,8 @@ public class StatesService {
                     JOIN lookup l ON s.property_type = l.code AND l.type_code=1 AND l.parent_id IS NULL
                     JOIN lookup l2 ON s.ownership_type = l2.code AND l2.type_code=2
                     JOIN lookup l3 ON s.property_sub_type = l3.code AND l3.type_code=1
-                    LEFT JOIN property_features p ON s.state_id = p.state_id
+                    LEFT JOIN property_features pf ON s.state_id = pf.state_id
+                    LEFT JOIN features f ON pf.feature_Id = f.feature_Id
                     JOIN zone_users z ON s.created_user = z.user_id
                     LEFT JOIN user_actions ua ON ua.state_id = s.state_id AND ua.action_type = 'VIEW'
                     LEFT JOIN user_actions ua2 ON ua2.state_id = s.state_id AND ua2.action_type = 'FAVORITE' and ( ua2.app_user_id =:userId or ua2.unregistered_id =:userId)
@@ -171,7 +172,7 @@ public class StatesService {
                                ,s.building_age AS buildingAge , s.price, s.longitude, s.latitude
                                         , s.published_at AS publishedAt,  g.name_ar AS governorate , s.state_type AS category ,
                                           s.address , s.payment_method AS paymentMethod ,GROUP_CONCAT(DISTINCT CONCAT(:link, a.url_image) SEPARATOR  ',') AS attachments,
-                                         GROUP_CONCAT(DISTINCT p.feature_code SEPARATOR  ',') AS features,
+                                         GROUP_CONCAT(DISTINCT CONCAT('{"name":"', f.name, '","imageUrl":"', :link, f.image_url, '"}') SEPARATOR '|||') AS featuresJson,
                                          CONCAT(z.first_name, ' ',z.last_name) AS publisherName,
                                          z.phone AS publisherPhone,
                                          count(distinct ua.id)  as viewCount,
@@ -182,7 +183,8 @@ public class StatesService {
                         JOIN lookup l ON s.property_type = l.code AND l.type_code=1
                         JOIN lookup l2 ON s.ownership_type = l2.code AND l2.type_code=2
                         JOIN lookup l3 ON s.property_sub_type = l3.code AND l3.type_code=1
-                        LEFT JOIN property_features p ON s.state_id = p.state_id
+                        LEFT JOIN property_features pf ON s.state_id = pf.state_id
+                        LEFT JOIN features f ON pf.feature_Id = f.feature_Id                        
                         JOIN zone_users z ON s.created_user = z.user_id
                         LEFT JOIN user_actions ua ON ua.state_id = s.state_id AND ua.action_type = 'VIEW'
                         LEFT JOIN user_actions ua2 ON ua2.state_id = s.state_id AND ua2.action_type = 'FAVORITE' and ( ua2.app_user_id =:userId or ua2.unregistered_id =:userId)
@@ -216,7 +218,7 @@ public class StatesService {
                                ,s.building_age AS buildingAge , s.price, s.longitude, s.latitude
                                         , s.published_at AS publishedAt,  g.name_ar AS governorate , s.state_type AS category ,
                                           s.address , s.payment_method AS paymentMethod ,GROUP_CONCAT(DISTINCT CONCAT(:link, a.url_image) SEPARATOR  ',') AS attachments,
-                                         GROUP_CONCAT(DISTINCT p.feature_code SEPARATOR  ',') AS features,
+                                         GROUP_CONCAT(DISTINCT CONCAT('{"name":"', f.name, '","imageUrl":"', :link, f.image_url, '"}') SEPARATOR '|||') AS featuresJson,
                                          CONCAT(z.first_name, ' ',z.last_name) AS publisherName,
                                          z.phone AS publisherPhone,
                                          count(distinct ua.id)  as viewCount,
@@ -227,7 +229,8 @@ public class StatesService {
                         JOIN lookup l ON s.property_type = l.code AND l.type_code=1
                         JOIN lookup l2 ON s.ownership_type = l2.code AND l2.type_code=2
                         JOIN lookup l3 ON s.property_sub_type = l3.code AND l3.type_code=1
-                        LEFT JOIN property_features p ON s.state_id = p.state_id
+                        LEFT JOIN property_features pf ON s.state_id = pf.state_id
+                        LEFT JOIN features f ON pf.feature_Id = f.feature_Id
                         JOIN zone_users z ON s.created_user = z.user_id
                         LEFT JOIN user_actions ua ON ua.state_id = s.state_id AND ua.action_type = 'VIEW'
                         LEFT JOIN user_actions ua2 ON ua2.state_id = s.state_id AND ua2.action_type = 'FAVORITE' and ( ua2.app_user_id =:userId or ua2.unregistered_id =:userId)
@@ -257,7 +260,7 @@ public class StatesService {
                                ,s.building_age AS buildingAge , s.price, s.longitude, s.latitude
                                         , s.published_at AS publishedAt, g.name_ar AS governorate , s.state_type AS category ,
                                           s.address , s.payment_method AS paymentMethod ,GROUP_CONCAT(DISTINCT CONCAT(:link, a.url_image) SEPARATOR  ',') AS attachments,
-                                         GROUP_CONCAT(DISTINCT p.feature_code SEPARATOR  ',') AS features,
+                                         GROUP_CONCAT(DISTINCT CONCAT('{"name":"', f.name, '","imageUrl":"', :link, f.image_url, '"}') SEPARATOR '|||') AS featuresJson,
                                          CONCAT(z.first_name, ' ',z.last_name) AS publisherName,
                                          z.phone AS publisherPhone,
                                          count(distinct ua.id)  as viewCount,
@@ -268,7 +271,8 @@ public class StatesService {
                         JOIN lookup l ON s.property_type = l.code AND l.type_code=1
                         JOIN lookup l2 ON s.ownership_type = l2.code AND l2.type_code=2
                         JOIN lookup l3 ON s.property_sub_type = l3.code AND l3.type_code=1
-                        LEFT JOIN property_features p ON s.state_id = p.state_id
+                        LEFT JOIN property_features pf ON s.state_id = pf.state_id
+                        LEFT JOIN features f ON pf.feature_Id = f.feature_Id
                         JOIN zone_users z ON s.created_user = z.user_id
                         LEFT JOIN user_actions ua ON ua.state_id = s.state_id AND ua.action_type = 'VIEW'
                         LEFT JOIN user_actions ua2 ON ua2.state_id = s.state_id AND ua2.action_type = 'FAVORITE' and ( ua2.app_user_id =:userId or ua2.unregistered_id =:userId)
@@ -298,7 +302,8 @@ public class StatesService {
                                ,s.building_age AS buildingAge , s.price, s.longitude, s.latitude
                                         , s.published_at AS publishedAt,  g.name_ar AS governorate , s.state_type AS category ,
                                           s.address , s.payment_method AS paymentMethod ,GROUP_CONCAT(DISTINCT CONCAT(:link, a.url_image) SEPARATOR  ',') AS attachments,
-                                         GROUP_CONCAT(DISTINCT p.feature_code SEPARATOR  ',') AS features,
+                                         -- GROUP_CONCAT(DISTINCT p.feature_code SEPARATOR  ',') AS features,
+                                         GROUP_CONCAT(DISTINCT CONCAT('{"name":"', f.name, '","imageUrl":"', :link, f.image_url, '"}') SEPARATOR '|||') AS featuresJson,
                                          CONCAT(z.first_name, ' ',z.last_name) AS publisherName,
                                          z.phone AS publisherPhone,
                                          count(distinct ua.state_id)  as viewCount,
@@ -309,7 +314,8 @@ public class StatesService {
                         JOIN lookup l ON s.property_type = l.code AND l.type_code=1
                         JOIN lookup l2 ON s.ownership_type = l2.code AND l2.type_code=2
                         JOIN lookup l3 ON s.property_sub_type = l3.code AND l3.type_code=1
-                        LEFT JOIN property_features p ON s.state_id = p.state_id
+                        LEFT JOIN property_features pf ON s.state_id = pf.state_id
+                        LEFT JOIN features f ON pf.feature_Id = f.feature_Id
                         JOIN zone_users z ON s.created_user = z.user_id
                         LEFT JOIN user_actions ua ON ua.state_id = s.state_id AND ua.action_type = 'VIEW'
                         LEFT JOIN user_actions ua2 ON ua2.state_id = s.state_id AND ua2.action_type = 'FAVORITE' and ( ua2.app_user_id =:userId or ua2.unregistered_id =:userId)
@@ -332,11 +338,13 @@ public class StatesService {
     }
 
 
+    @Autowired
+    private FeatureRepository featureRepository;
 
 
 //    @CacheEvict(value = {"SaleStates","RentalStates"})
     public boolean addNewState(@NotBlank(message = "Description is required") String description, @Min(value = 1, message = "Area must be greater than 0") int area, @Min(value = 0, message = "Number of rooms cannot be negative") int numOfRooms, @Min(value = 0, message = "Garage size cannot be negative") int garageSize, @Min(value = 0, message = "Number of bathrooms cannot be negative") int numOfBathRooms, @Min(value = 0, message = "Number of storeys cannot be negative") int numOfStorey, @Min(value = 1, message = "Price must be greater than 0") long price, double longitude, double latitude, @NotNull(message = "Governorate is required") int governorate, @NotNull(message = "State type is required") Category category, List<MultipartFile> attachments, String token,
-                               int propertyType, int ownershipType, int buildingAge, String address, PaymentMethod paymentMethod, List<Integer> features, int propertySubType) throws IOException {
+                               int propertyType, int ownershipType, int buildingAge, String address, PaymentMethod paymentMethod, List<Long> features, int propertySubType) throws IOException {
 
 
 
@@ -350,10 +358,19 @@ public class StatesService {
                         propertyType, ownershipType, buildingAge,address,paymentMethod,propertySubType)
         );
 
+        Set<Feature> featureSet = new HashSet<>(
+                featureRepository.findAllById(features)
+        );
 
-//            features.forEach(feature -> {
-//                stateFeatureRepo.save(new PropertyFeatures(feature,state));
-//            });
+        // Validate that all requested features exist
+        if (featureSet.size() != features.size()) {
+            throw new IllegalArgumentException("Some features not found");
+        }
+//        features.forEach(state::addFeature);
+
+            features.forEach(feature -> {
+                stateFeatureRepo.save(new PropertyFeatures(feature,state));
+            });
 
         if (attachments != null) {
 
@@ -398,7 +415,7 @@ public class StatesService {
                                ,s.building_age AS buildingAge , s.price, s.longitude, s.latitude
                                         , s.published_at AS publishedAt, g.name_ar AS governorate , s.state_type AS category ,
                                           s.address , s.payment_method AS paymentMethod ,GROUP_CONCAT(DISTINCT CONCAT(:link, a.url_image) SEPARATOR  ',') AS attachments,
-                                         GROUP_CONCAT(DISTINCT p.feature_code SEPARATOR  ',') AS features,
+                                         GROUP_CONCAT(DISTINCT CONCAT('{"name":"', f.name, '","imageUrl":"', :link, f.image_url, '"}') SEPARATOR '|||') AS featuresJson,
                                          CONCAT(z.first_name, ' ',z.last_name) AS publisherName,
                                          z.phone AS publisherPhone,
                                          0  as viewCount,
@@ -409,7 +426,8 @@ public class StatesService {
                     JOIN lookup l ON s.property_type = l.code AND l.type_code=1
                     JOIN lookup l2 ON s.ownership_type = l2.code AND l2.type_code=2
                     JOIN lookup l3 ON s.property_sub_type = l3.code AND l3.type_code=1
-                    LEFT JOIN property_features p ON s.state_id = p.state_id
+                    LEFT JOIN property_features pf ON s.state_id = pf.state_id
+                    LEFT JOIN features f ON pf.feature_Id = f.feature_Id
                     JOIN zone_users z ON s.created_user = z.user_id
                     WHERE s.is_active = 1  -- AND s.published_at IS NULL
                       group by s.state_id, s.description, s.area, s.num_of_rooms,s.garage_size,
@@ -444,20 +462,21 @@ public class StatesService {
                                ,s.building_age AS buildingAge , s.price, s.longitude, s.latitude
                                         , s.published_at AS publishedAt,  g.name_ar AS governorate , s.state_type AS category ,
                                           s.address , s.payment_method AS paymentMethod ,GROUP_CONCAT(DISTINCT CONCAT(:link, a.url_image) SEPARATOR  ',') AS attachments,
-                                         GROUP_CONCAT(DISTINCT p.feature_code SEPARATOR  ',') AS features,
+                                         GROUP_CONCAT(DISTINCT CONCAT('{"name":"', f.name, '","imageUrl":"', :link, f.image_url, '"}') SEPARATOR '|||') AS featuresJson,
                                          CONCAT(z.first_name, ' ',z.last_name) AS publisherName,
                                          z.phone AS publisherPhone,
                                          count(distinct ua.id)  as viewCount,
                                         case when MAX(ua2.id) is not null then true else false end as isFavorite,
                                         count(distinct ua3.id)  as favCount,
-                                        ST_Distance_Sphere(s.location, ST_SRID(POINT(:lng, :lat),4326))/ 1000 AS distance
+                                        ST_Distance_Sphere(s.location, ST_SRID(POINT(:lng, :lat),0))/ 1000 AS distance
                         FROM states s
                         left JOIN attachment a ON s.state_id = a.state_id
                         JOIN fnd_governorates g ON s.governorate = g.code
                         JOIN lookup l ON s.property_type = l.code AND l.type_code=1
                         JOIN lookup l2 ON s.ownership_type = l2.code AND l2.type_code=2
                         JOIN lookup l3 ON s.property_sub_type = l3.code AND l3.type_code=1
-                        LEFT JOIN property_features p ON s.state_id = p.state_id
+                        LEFT JOIN property_features pf ON s.state_id = pf.state_id
+                        LEFT JOIN features f ON pf.feature_Id = f.feature_Id
                         JOIN zone_users z ON s.created_user = z.user_id
                         LEFT JOIN user_actions ua ON ua.state_id = s.state_id AND ua.action_type = 'VIEW'
                         LEFT JOIN user_actions ua2 ON ua2.state_id = s.state_id AND ua2.action_type = 'FAVORITE' and ( ua2.app_user_id =:userId or ua2.unregistered_id =:userId)
@@ -488,20 +507,21 @@ public class StatesService {
                                ,s.building_age AS buildingAge , s.price, s.longitude, s.latitude
                                         , s.published_at AS publishedAt,  g.name_ar AS governorate , s.state_type AS category ,
                                           s.address , s.payment_method AS paymentMethod ,GROUP_CONCAT(DISTINCT CONCAT(:link, a.url_image) SEPARATOR  ',') AS attachments,
-                                         GROUP_CONCAT(DISTINCT p.feature_code SEPARATOR  ',') AS features,
+                                         GROUP_CONCAT(DISTINCT CONCAT('{"name":"', f.name, '","imageUrl":"', :link, f.image_url, '"}') SEPARATOR '|||') AS featuresJson,
                                          CONCAT(z.first_name, ' ',z.last_name) AS publisherName,
                                          z.phone AS publisherPhone,
                                          count(distinct ua.id)  as viewCount,
                                         case when MAX(ua2.id) is not null then true else false end as isFavorite,
                                         count(distinct ua3.id)  as favCount,
-                                        ST_Distance_Sphere(s.location, ST_SRID(POINT(:lng, :lat),4326))/ 1000 AS distance
+                                        ST_Distance_Sphere(s.location, ST_SRID(POINT(:lng, :lat),0))/ 1000 AS distance
                         FROM states s
                         left JOIN attachment a ON s.state_id = a.state_id
                         JOIN fnd_governorates g ON s.governorate = g.code
                         JOIN lookup l ON s.property_type = l.code AND l.type_code=1
                         JOIN lookup l2 ON s.ownership_type = l2.code AND l2.type_code=2
                         JOIN lookup l3 ON s.property_sub_type = l3.code AND l3.type_code=1
-                        LEFT JOIN property_features p ON s.state_id = p.state_id
+                        LEFT JOIN property_features pf ON s.state_id = pf.state_id
+                        LEFT JOIN features f ON pf.feature_Id = f.feature_Id
                         JOIN zone_users z ON s.created_user = z.user_id
                         LEFT JOIN user_actions ua ON ua.state_id = s.state_id AND ua.action_type = 'VIEW'
                         LEFT JOIN user_actions ua2 ON ua2.state_id = s.state_id AND ua2.action_type = 'FAVORITE' and ( ua2.app_user_id =:userId or ua2.unregistered_id =:userId)
@@ -528,7 +548,7 @@ public class StatesService {
                                ,s.building_age AS buildingAge , s.price, s.longitude, s.latitude
                                         , s.published_at AS publishedAt, g.name_ar AS governorate , s.state_type AS category ,
                                           s.address , s.payment_method AS paymentMethod ,GROUP_CONCAT(DISTINCT CONCAT(:link, a.url_image) SEPARATOR  ',') AS attachments,
-                                         GROUP_CONCAT(DISTINCT p.feature_code SEPARATOR  ',') AS features,
+                                         GROUP_CONCAT(DISTINCT CONCAT('{"name":"', f.name, '","imageUrl":"', :link, f.image_url, '"}') SEPARATOR '|||') AS featuresJson,
                                          CONCAT(z.first_name, ' ',z.last_name) AS publisherName,
                                          z.phone AS publisherPhone,
                                          count(distinct ua.id)  as viewCount,
@@ -539,11 +559,12 @@ public class StatesService {
                         JOIN lookup l ON s.property_type = l.code AND l.type_code=1
                         JOIN lookup l2 ON s.ownership_type = l2.code AND l2.type_code=2
                         JOIN lookup l3 ON s.property_sub_type = l3.code AND l3.type_code=1
-                        LEFT JOIN property_features p ON s.state_id = p.state_id
+                        LEFT JOIN property_features pf ON s.state_id = pf.state_id
+                        LEFT JOIN features f ON pf.feature_Id = f.feature_Id
                         JOIN zone_users z ON s.created_user = z.user_id
                         LEFT JOIN user_actions ua ON ua.state_id = s.state_id AND ua.action_type = 'VIEW'
                         LEFT JOIN user_actions ua2 ON ua2.state_id = s.state_id AND ua2.action_type = 'FAVORITE' and ( ua2.app_user_id =:userId or ua2.unregistered_id =:userId)
-                        WHERE s.is_active = 1  AND s.published_at IS NOT NULL AND s.createdUser=:userId
+                        WHERE s.is_active = 1  AND s.published_at IS NOT NULL AND s.created_User=:userId
                           group by s.state_id, s.description, s.area, s.num_of_rooms,s.garage_size,
                                                    s.num_of_bath_rooms, s.num_of_storey,s.property_type,s.ownership_type, s.price, s.longitude, s.latitude, s.is_active
                                             ,s.created_user, s.published_at, g.name_ar , s.state_type, s.state_type ,s.address,s.payment_method,s.building_age ,l3.value
@@ -568,7 +589,7 @@ public class StatesService {
                                ,s.building_age AS buildingAge , s.price, s.longitude, s.latitude
                                         , s.published_at AS publishedAt, g.name_ar AS governorate , s.state_type AS category ,
                                           s.address , s.payment_method AS paymentMethod ,GROUP_CONCAT(DISTINCT CONCAT(:link, a.url_image) SEPARATOR  ',') AS attachments,
-                                         GROUP_CONCAT(DISTINCT p.feature_code SEPARATOR  ',') AS features,
+                                         GROUP_CONCAT(DISTINCT CONCAT('{"name":"', f.name, '","imageUrl":"', :link, f.image_url, '"}') SEPARATOR '|||') AS featuresJson,
                                          CONCAT(z.first_name, ' ',z.last_name) AS publisherName,
                                          z.phone AS publisherPhone,
                                          count(distinct ua.id)  as viewCount,
@@ -579,7 +600,8 @@ public class StatesService {
                         JOIN lookup l ON s.property_type = l.code AND l.type_code=1
                         JOIN lookup l2 ON s.ownership_type = l2.code AND l2.type_code=2
                         JOIN lookup l3 ON s.property_sub_type = l3.code AND l3.type_code=1
-                        LEFT JOIN property_features p ON s.state_id = p.state_id
+                        LEFT JOIN property_features pf ON s.state_id = pf.state_id
+                        LEFT JOIN features f ON pf.feature_Id = f.feature_Id
                         JOIN zone_users z ON s.created_user = z.user_id
                         LEFT JOIN user_actions ua ON ua.state_id = s.state_id AND ua.action_type = 'VIEW'
                         LEFT JOIN user_actions ua2 ON ua2.state_id = s.state_id AND ua2.action_type = 'FAVORITE' and ( ua2.app_user_id =:userId or ua2.unregistered_id =:userId)
@@ -608,7 +630,7 @@ public class StatesService {
                                ,s.building_age AS buildingAge , s.price, s.longitude, s.latitude
                                         , s.published_at AS publishedAt,  g.name_ar AS governorate , s.state_type AS category ,
                                           s.address , s.payment_method AS paymentMethod ,GROUP_CONCAT(DISTINCT CONCAT(:link, a.url_image) SEPARATOR  ',') AS attachments,
-                                         GROUP_CONCAT(DISTINCT p.feature_code SEPARATOR  ',') AS features,
+                                         GROUP_CONCAT(DISTINCT CONCAT('{"name":"', f.name, '","imageUrl":"', :link, f.image_url, '"}') SEPARATOR '|||') AS featuresJson,
                                          CONCAT(z.first_name, ' ',z.last_name) AS publisherName,
                                          z.phone AS publisherPhone,
                                          count(distinct ua.id)  as viewCount,
@@ -619,7 +641,8 @@ public class StatesService {
                         JOIN lookup l ON s.property_type = l.code AND l.type_code=1
                         JOIN lookup l2 ON s.ownership_type = l2.code AND l2.type_code=2
                         JOIN lookup l3 ON s.property_sub_type = l3.code AND l3.type_code=1
-                        LEFT JOIN property_features p ON s.state_id = p.state_id
+                        LEFT JOIN property_features pf ON s.state_id = pf.state_id
+                        LEFT JOIN features f ON pf.feature_Id = f.feature_Id
                         JOIN zone_users z ON s.created_user = z.user_id
                         LEFT JOIN user_actions ua ON ua.state_id = s.state_id AND ua.action_type = 'VIEW'
                         LEFT JOIN user_actions ua2 ON ua2.state_id = s.state_id AND ua2.action_type = 'FAVORITE' and ( ua2.app_user_id =:userId or ua2.unregistered_id =:userId)

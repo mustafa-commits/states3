@@ -20,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Set;
 
 
 @RestController
@@ -36,14 +37,14 @@ public class RealStatesController implements SecuredRestController {
 
     @PostMapping("V1/api/AllStates/{page}")
     public List<StatesDTO> allStates(
-    @PathVariable int page,
-    @RequestParam(required = false) Integer governate,
-    @RequestParam(required = false) Integer propertyType,
-    @RequestParam(required = false) Integer propertySubType,
-    @Parameter(description = "price date") @RequestParam(required = false) String sortBy,
-    @Parameter(description = "asc desc") @RequestParam(required = false) String order,
-    @Parameter(hidden = true) @RequestHeader("Authorization") String token
-) {
+            @PathVariable int page,
+            @RequestParam(required = false) Integer governate,
+            @RequestParam(required = false) Integer propertyType,
+            @RequestParam(required = false) Integer propertySubType,
+            @Parameter(description = "price date") @RequestParam(required = false) String sortBy,
+            @Parameter(description = "asc desc") @RequestParam(required = false) String order,
+            @Parameter(hidden = true) @RequestHeader("Authorization") String token
+    ) {
         return service.getALLState(page, governate, token, propertySubType, propertyType, sortBy, order);
     }
 
@@ -133,9 +134,7 @@ public class RealStatesController implements SecuredRestController {
                                @RequestParam(name = "building_age") int buildingAge,
                                @RequestParam(name = "address") String address,
                                @RequestParam(name = "payment_method") PaymentMethod paymentMethod,
-                               @RequestParam(name = "features", required = false) List<Integer> features,
-
-
+                               @RequestParam(name = "features", required = false) List<Long> features,
                                @RequestParam List<MultipartFile> attachments) throws IOException {
         return service.addNewState(description,
                 area, numOfBedRooms, garageSize, numOfBathRooms, numOfStorey, price, longitude, latitude,  governorate, category, attachments, token,

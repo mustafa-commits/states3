@@ -2,6 +2,7 @@ package com.ayn.states.realstate.entity.states;
 
 
 import com.ayn.states.realstate.entity.att.Attachments;
+import com.ayn.states.realstate.entity.propertyFeature.Feature;
 import com.ayn.states.realstate.entity.propertyFeature.PropertyFeatures;
 import com.ayn.states.realstate.enums.Category;
 import com.ayn.states.realstate.enums.PaymentMethod;
