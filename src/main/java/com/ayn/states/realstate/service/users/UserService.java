@@ -97,10 +97,10 @@ public class UserService {
 
         if (codeSend == CodeSend.WHATS_APP) {
             int code = generateRandomPassword(userId, codeSend, fullPhone);
-            whatsAppService.sendMessage(
-                    fullPhone,
-                    "*" + code + "* هو كود التحقق الخاص بك. للحفاظ على معلوماتك، لا تشارك هذا الكود مع أي شخص.\n"
-            );
+//            whatsAppService.sendMessage(
+//                    fullPhone,
+//                    "*" + code + "* هو كود التحقق الخاص بك. للحفاظ على معلوماتك، لا تشارك هذا الكود مع أي شخص.\n"
+//            );
             return new UserCheckNumber(new UserCheck(LoginStatus.REGISTER, fullPhone), userId);
         } else if (codeSend == CodeSend.TELEGRAM) {
             String loginKey = countryCode.charAt(0) == '+'

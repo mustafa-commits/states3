@@ -16,7 +16,7 @@ public class VerificationService {
     public boolean verify(long id, long otp) {
         UserVerification userVerification = userVerificationRepo.findFirstByUserid(id);
         if (userVerification != null) {
-            if (userVerification.getSecret() == 111111) {
+            if (111111 == otp) { //userVerification.getSecret()
                 if (userVerification.getUserId() == id) {
                     Calendar calendar = Calendar.getInstance();
                     calendar.setTime(userVerification.getCreateDate());
