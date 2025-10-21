@@ -1,5 +1,5 @@
 # المرحلة الأولى: بناء التطبيق باستخدام Maven
-FROM maven:3.9.6-eclipse-temurin-21 AS build
+FROM maven:3.9.6-eclipse-temurin-22 AS build
 
 # تعيين مجلد العمل داخل الحاوية
 WORKDIR /app
@@ -11,7 +11,7 @@ COPY . .
 RUN mvn clean package -DskipTests
 
 # المرحلة الثانية: بناء الصورة النهائية باستخدام OpenJDK 22
-FROM eclipse-temurin:21-jre-jammy
+FROM eclipse-temurin:22-jre-jammy
 
 # تعيين مجلد العمل داخل الحاوية
 WORKDIR /app
