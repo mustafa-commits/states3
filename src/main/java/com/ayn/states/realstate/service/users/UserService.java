@@ -168,7 +168,7 @@ public class UserService {
 
     public SignUpStatus signUp(CredentialController.SignUpRequest signUpRequest) {
 
-        if (usersRepo.existsByPhoneNumber(signUpRequest.phoneNumber()).isPresent()) {
+        if (usersRepo.checkExistsByPhoneNumber(signUpRequest.phoneNumber())) {
             return SignUpStatus.EXISTS;
         }else {
             usersRepo.save(new Users(signUpRequest.firstName(),

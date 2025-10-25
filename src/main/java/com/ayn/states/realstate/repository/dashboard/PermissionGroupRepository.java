@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface PermissionGroupRepository extends JpaRepository<PermissionGroup, Long> {
@@ -14,4 +15,6 @@ public interface PermissionGroupRepository extends JpaRepository<PermissionGroup
     List<PermissionGroup> findAll();
 
     List<PermissionGroup> findAllByActive(boolean active);
+
+    Optional<PermissionGroup> findByIdAndActiveTrue(Long id);
 }

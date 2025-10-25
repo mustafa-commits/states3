@@ -8,11 +8,17 @@ import com.ayn.states.realstate.entity.propertyFeature.FeatureType;
 import com.ayn.states.realstate.repository.feature.FeatureRepository;
 import com.ayn.states.realstate.repository.lookup.LookUpRepo;
 import com.ayn.states.realstate.service.token.TokenService;
+import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -39,6 +45,33 @@ public class FeaturesService {
 
 
     private final String UPLOAD_DIR = "uploads/";
+
+//    @Value("$featureBasePath")
+//    private String basePath;
+
+    public ResponseEntity<?> getFeatureImage(String fileName) {
+        if (featureRepository.getFeatureByImageUrl(fileName)) {
+            try {
+                String fileExtension = FilenameUtils.getExtension(fileName);
+                MediaType contentType = MediaType.APPLICATION_JSON;
+                if (fileExtension.equalsIgnoreCase("pdf")) {
+                    contentType = MediaType.APPLICATION_PDF;
+                } else if (fileExtension.equalsIgnoreCase("jpg") || fileExtension.equalsIgnoreCase("jpeg")) {
+                    contentType = MediaType.valueOf("image/jpeg");
+                } else if (fileExtension.equalsIgnoreCase("png")) {
+                    contentType = MediaType.valueOf("image/png");
+                }
+                // Build the response with file content
+                return ResponseEntity.ok()
+                        .contentType(contentType)
+                        .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileName + "\"")
+                        .body(Files.readAllBytes(new File(UPLOAD_DIR + fileName).toPath()));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        return ResponseEntity.notFound().build();
+    }
 
 
     public List<FeatureDTO> getStateFeatures() {
@@ -98,7 +131,8 @@ public class FeaturesService {
     private FeatureDTO convertToDTO(Feature feature) {
         return new FeatureDTO (
                 feature.getFeatureId(),
-                feature.getName()
+                feature.getName(),
+                feature.getImageUrl()
         );
     }
 
@@ -106,7 +140,8 @@ public class FeaturesService {
 
     public record FeatureDTO (
             long code,
-            String value
+            String value,
+            String image
     ){}
 
     public record CreateFeatureDTO (

@@ -13,4 +13,6 @@ public interface FeatureRepository extends JpaRepository<Feature,Long> {
     List<Feature> findByIsActiveTrue();
 
     boolean existsByName(String s);
+
+    boolean getFeatureByImageUrl(String fileName);
 }

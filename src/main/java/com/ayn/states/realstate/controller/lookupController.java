@@ -8,6 +8,7 @@ import com.ayn.states.realstate.service.sections.SectionService;
 import com.ayn.states.realstate.service.states.FeaturesService;
 import io.swagger.v3.oas.annotations.headers.Header;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -39,6 +40,10 @@ public class lookupController implements SecuredRestController {
     @GetMapping("/V1/api/ListFeatures")
     public List<FeaturesService.FeatureDTO> getStateFeatures() {
         return stateFeaturesService.getStateFeatures();
+    }
+    @GetMapping("/V1/api/FeatureImage/{fileName}")
+    public ResponseEntity<?> getFeatureImage(@PathVariable String fileName) {
+        return stateFeaturesService.getFeatureImage(fileName);
     }
 
     @PostMapping("/V1/api/createFeature")

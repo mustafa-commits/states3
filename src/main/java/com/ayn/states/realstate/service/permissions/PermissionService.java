@@ -72,7 +72,8 @@ public class PermissionService {
 
 
     public List<PermissionGroup> listGroups() {
-        return permissionGroupRepository.findAllByActive(true);
+//        return permissionGroupRepository.findAllByActive(true);
+        return permissionGroupRepository.findAll();
     }
 
     public List<Permission> listPermissions() {

@@ -56,7 +56,7 @@ public class DashboardService {
     }
 
     public DashboardUser addUser(String token, CreateUserRequest request) {
-        PermissionGroup group = permissionGroupRepository.findById(request.permissionGroupId())
+        PermissionGroup group = permissionGroupRepository.findByIdAndActiveTrue(request.permissionGroupId())
                 .orElseThrow(() -> new UnauthorizedException("Permission group not found"));
 
         return userRepo.save(DashboardUser.builder()
