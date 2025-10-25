@@ -1,6 +1,7 @@
 package com.ayn.states.realstate.entity.propertyFeature;
 
 
+import com.ayn.states.realstate.entity.compound.Compound;
 import com.ayn.states.realstate.entity.states.States;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
@@ -28,10 +29,20 @@ public class PropertyFeatures {
     @JsonBackReference // Prevents infinite recursion in JSON serialization
     private States featuredState;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "compound_id") // Foreign key column
+    @JsonBackReference // Prevents infinite recursion in JSON serialization
+    private Compound featuredCompound;
+
 
     public PropertyFeatures(Long featureId, States featuredState) {
         this.featureId = featureId;
         this.featuredState = featuredState;
+    }
+
+    public PropertyFeatures(Long featureId, Compound featuredCompound) {
+        this.featureId = featureId;
+        this.featuredCompound = featuredCompound;
     }
 
     }

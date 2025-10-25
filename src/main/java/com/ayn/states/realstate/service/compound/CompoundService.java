@@ -7,10 +7,14 @@ import com.ayn.states.realstate.entity.compound.CompoundPost;
 import com.ayn.states.realstate.entity.compound.SocialLinks;
 import com.ayn.states.realstate.entity.compound.UnitMap;
 import com.ayn.states.realstate.entity.notification.NotificationToken;
+import com.ayn.states.realstate.entity.propertyFeature.Feature;
+import com.ayn.states.realstate.entity.propertyFeature.PropertyFeatures;
 import com.ayn.states.realstate.exception.UnauthorizedException;
 import com.ayn.states.realstate.repository.compound.CompoundPostRepo;
 import com.ayn.states.realstate.repository.compound.CompoundRepository;
 import com.ayn.states.realstate.repository.compound.UnitMapRepository;
+import com.ayn.states.realstate.repository.feature.FeatureRepository;
+import com.ayn.states.realstate.repository.feature.StateFeatureRepo;
 import com.ayn.states.realstate.repository.notification.NotificationTokenRepo;
 import com.ayn.states.realstate.service.token.TokenService;
 import com.google.firebase.messaging.*;
@@ -69,6 +73,12 @@ public class CompoundService implements CommandLineRunner {
 
     @Autowired
     private NotificationTokenRepo notificationTokenRepo;
+
+    @Autowired
+    private FeatureRepository featureRepository;
+
+    @Autowired
+    private StateFeatureRepo compoundFeatureRepo;
 
 
 
@@ -193,7 +203,7 @@ public class CompoundService implements CommandLineRunner {
             MultipartFile thumbnailImage,
             MultipartFile model3d,
             List<MultipartFile> unitMapsFiles,
-            String token
+            String token, List<Long> features
     ) {
         Integer userId = extractUserIdFromToken(token);
         Compound compound = createCompoundFromDto(dto, userId);
@@ -219,7 +229,22 @@ public class CompoundService implements CommandLineRunner {
         // Wait for all uploads to complete
         CompletableFuture.allOf(uploadFutures.toArray(new CompletableFuture[0])).join();
 
+        Set<Feature> featureSet = new HashSet<>(
+                featureRepository.findAllById(features)
+        );
+
+        // Validate that all requested features exist
+        if (featureSet.size() != features.size()) {
+            throw new IllegalArgumentException("Some features not found");
+        }
+//        features.forEach(state::addFeature);
+
         Compound savedCompound = compoundRepository.save(compound);
+
+        features.forEach(feature -> {
+            compoundFeatureRepo.save(new PropertyFeatures(feature,savedCompound));
+        });
+
 
         // Handle unit maps with async uploads
         if (dto.unitMaps() != null && !dto.unitMaps().isEmpty()) {

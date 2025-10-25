@@ -48,12 +48,13 @@ public class CompoundController implements SecuredRestController  {
             @RequestPart(value = "thumbnailImage", required = false) MultipartFile thumbnailImage,
             @RequestPart(value = "model3d", required = false) MultipartFile model3d,
             @RequestPart(value = "unitMaps", required = false) List<MultipartFile> unitMapsFiles,
+            @RequestParam(name = "features", required = false) List<Long> features,
             @RequestHeader(name = "Authorization") String token
     ) throws JsonProcessingException {
 
         return compoundService.createCompoundWithAsyncUploads(
                 new ObjectMapper().readValue(compoundJson, CompoundDTO.class)
-                , coverImage, thumbnailImage, model3d, unitMapsFiles, token);
+                , coverImage, thumbnailImage, model3d, unitMapsFiles, token,features);
     }
 
 
